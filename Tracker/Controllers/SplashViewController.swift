@@ -29,6 +29,12 @@ final class SplashViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        switchToTabBarViewController()
+    }
+    
     // MARK: - Private Methods
     
     private func setupViews() {
@@ -45,4 +51,22 @@ final class SplashViewController: UIViewController {
         ])
     }
 
+    private func switchToTabBarViewController() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first else {
+            assertionFailure("Invalid configuration, no main window found")
+            return
+        }
+        
+        let tabBarViewController = TabBarViewController()
+        window.rootViewController = tabBarViewController
+        
+        UIView.transition(
+            with: window,
+            duration: 0.3,
+            options: .transitionCrossDissolve,
+            animations: nil,
+            completion: nil
+        )
+    }
 }
