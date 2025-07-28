@@ -65,6 +65,9 @@ final class TrackersViewController: UIViewController {
         return formatter
     }()
     
+    private var categories: [TrackerCategory] = []
+    var completedTrackers: [TrackerRecord] = []
+    
     // MARK: - Overrides Methods
     
     override func viewDidLoad() {
