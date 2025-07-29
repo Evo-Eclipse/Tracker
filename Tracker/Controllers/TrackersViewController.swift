@@ -12,7 +12,7 @@ final class TrackersViewController: UIViewController {
     // MARK: - Private Properties
     
     private lazy var addButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "button_add"), for: .normal)
         button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         return button
@@ -75,6 +75,7 @@ final class TrackersViewController: UIViewController {
         
         view.backgroundColor = .ypWhite
         
+        setupNavigationBar()
         setupViews()
         setupConstraints()
     }
@@ -93,8 +94,16 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Private Methods
     
+    private func setupNavigationBar() {
+        let addBarButtonItem = UIBarButtonItem(customView: addButton)
+        navigationItem.leftBarButtonItem = addBarButtonItem
+        
+        let datePickerBarButtonItem = UIBarButtonItem(customView: datePicker)
+        navigationItem.rightBarButtonItem = datePickerBarButtonItem
+    }
+    
     private func setupViews() {
-        [addButton, datePicker, titleLabel, searchBar, placeholderImageView, placeholderLabel].forEach {
+        [titleLabel, searchBar, placeholderImageView, placeholderLabel].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -102,15 +111,7 @@ final class TrackersViewController: UIViewController {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            addButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            addButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 6),
-            addButton.widthAnchor.constraint(equalToConstant: 44),
-            addButton.heightAnchor.constraint(equalToConstant: 44),
-            
-            datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            datePicker.centerYAnchor.constraint(equalTo: addButton.centerYAnchor),
-            
-            titleLabel.topAnchor.constraint(equalTo: addButton.bottomAnchor),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             
