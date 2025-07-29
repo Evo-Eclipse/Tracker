@@ -38,10 +38,8 @@ final class SplashViewController: UIViewController {
     // MARK: - Private Methods
     
     private func setupViews() {
-        [imageView].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
-        }
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(imageView)
     }
     
     private func setupConstraints() {
