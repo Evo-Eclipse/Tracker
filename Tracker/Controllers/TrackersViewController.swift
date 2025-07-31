@@ -93,11 +93,7 @@ final class TrackersViewController: UIViewController {
     // MARK: - Actions
     
     @objc private func addButtonTapped() {
-        print("Add button tapped")
-        
-        // TODO: Placeholder
-        let tracker = Tracker(id: 0, title: "Поливать растения", color: .ypSelection5, emoji: "😪", schedule: [.monday, .wednesday, .friday])
-        addTracker(tracker, to: "Домашний уют")
+        presentModalViewController()
     }
     
     @objc private func dateChanged(_ sender: UIDatePicker) {
@@ -142,6 +138,13 @@ final class TrackersViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    private func presentModalViewController() {
+        let modalViewController = TrackerTypeSelectionViewController()
+        modalViewController.trackerDelegate = self
+        let navigationController = UINavigationController(rootViewController: modalViewController)
+        present(navigationController, animated: true)
     }
     
     // MARK: - Compositional Layout
@@ -258,6 +261,14 @@ extension TrackersViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let tracker = categories[indexPath.section].trackers[indexPath.item]
         print("Selected tracker: \(tracker.title)")
+    }
+}
+
+// MARK: - NewTrackerViewControllerDelegate
+
+extension TrackersViewController: NewTrackerViewControllerDelegate {
+    func didCreateTracker(_ tracker: Tracker, in category: String) {
+        addTracker(tracker, to: category)
     }
 }
 
