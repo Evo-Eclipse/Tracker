@@ -7,10 +7,24 @@
 
 import UIKit
 
+protocol TrackerCellDelegate: AnyObject {
+    func didToggleTracker(_ tracker: Tracker, on date: Date)
+    func getCompletionCount(for trackerId: UInt) -> Int
+    func isTrackerCompleted(_ trackerId: UInt, on date: Date) -> Bool
+}
+
 final class TrackerCell: UICollectionViewCell {
     static let identifier = "TrackerCell"
     
+    // MARK: - Public Properties
+    
+    weak var delegate: TrackerCellDelegate?
+    
     // MARK: - Private Properties
+    
+    private var tracker: Tracker?
+    private var currentDate: Date = Date()
+    private var isCompleted: Bool = false
     
     private lazy var cardView: UIView = {
         let view = UIView()
@@ -78,23 +92,38 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     
-    func configure(with tracker: Tracker) {
+    func configure(with tracker: Tracker, on date: Date = Date()) {
+        self.tracker = tracker
+        self.currentDate = date
+        
         cardView.backgroundColor = tracker.color
         completeButton.tintColor = tracker.color
         
         emojiLabel.text = tracker.emoji
         titleLabel.text = tracker.title
         
-        // TODO: State management for the counter label
-        countLabel.text = "0 дней"
-        
-        // TODO: State management for the complete button
+        updateCompletionState()
+        updateCountLabel()
     }
     
     // MARK: - Actions
     
     @objc private func completeButtonTapped() {
+        guard let tracker = tracker else { return }
         
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let selectedDate = calendar.startOfDay(for: currentDate)
+        
+        if selectedDate > today {
+            return
+        }
+        
+        delegate?.didToggleTracker(tracker, on: currentDate)
+        
+        isCompleted.toggle()
+        updateCompletionState()
+        updateCountLabel()
     }
     
     // MARK: - Private Methods
@@ -141,5 +170,29 @@ final class TrackerCell: UICollectionViewCell {
             countLabel.centerYAnchor.constraint(equalTo: completeButton.centerYAnchor),
             countLabel.trailingAnchor.constraint(lessThanOrEqualTo: completeButton.leadingAnchor, constant: -8)
         ])
+    }
+    
+    private func updateCompletionState() {
+        guard let tracker = tracker else { return }
+        
+        isCompleted = delegate?.isTrackerCompleted(tracker.id, on: currentDate) ?? false
+        
+        let imageName = isCompleted ? "button_completed" : "button_complete"
+        let image = UIImage(named: imageName)?.withRenderingMode(.alwaysTemplate)
+        completeButton.setImage(image, for: .normal)
+        
+        completeButton.alpha = isCompleted ? 0.3 : 1.0
+        
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let selectedDate = calendar.startOfDay(for: currentDate)
+        completeButton.isEnabled = selectedDate <= today
+    }
+    
+    private func updateCountLabel() {
+        guard let tracker = tracker else { return }
+        
+        let completionCount = delegate?.getCompletionCount(for: tracker.id) ?? 0
+        countLabel.text = completionCount.localizedDayCount
     }
 }
