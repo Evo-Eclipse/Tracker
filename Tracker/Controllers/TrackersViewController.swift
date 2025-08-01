@@ -43,6 +43,15 @@ final class TrackersViewController: UIViewController {
         return bar
     }()
     
+    private lazy var placeholderStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.alignment = .center
+        stackView.distribution = .fill
+        return stackView
+    }()
+    
     private lazy var placeholderImageView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(named: "icon_dizzy")
@@ -98,6 +107,7 @@ final class TrackersViewController: UIViewController {
     
     @objc private func dateChanged(_ sender: UIDatePicker) {
         print("Date changed to: \(formatter.string(from: sender.date))")
+        collectionView.reloadData()
     }
     
     // MARK: - Private Methods
@@ -111,9 +121,14 @@ final class TrackersViewController: UIViewController {
     }
     
     private func setupViews() {
-        [titleLabel, searchBar, placeholderImageView, placeholderLabel, collectionView].forEach {
+        [titleLabel, searchBar, placeholderStackView, collectionView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
+        }
+        
+        [placeholderImageView, placeholderLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            placeholderStackView.addArrangedSubview($0)
         }
     }
     
@@ -127,11 +142,8 @@ final class TrackersViewController: UIViewController {
             searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             searchBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             
-            placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placeholderImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
-            placeholderLabel.topAnchor.constraint(equalTo: placeholderImageView.bottomAnchor, constant: 8),
-            placeholderLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
             collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 8),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -237,7 +249,8 @@ extension TrackersViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCell.identifier, for: indexPath) as! TrackerCell
         let tracker = categories[indexPath.section].trackers[indexPath.item]
-        cell.configure(with: tracker)
+        cell.delegate = self
+        cell.configure(with: tracker, on: datePicker.date)
         return cell
     }
     
@@ -269,6 +282,39 @@ extension TrackersViewController: UICollectionViewDelegate {
 extension TrackersViewController: NewTrackerViewControllerDelegate {
     func didCreateTracker(_ tracker: Tracker, in category: String) {
         addTracker(tracker, to: category)
+    }
+}
+
+// MARK: - TrackerCellDelegate
+
+extension TrackersViewController: TrackerCellDelegate {
+    func didToggleTracker(_ tracker: Tracker, on date: Date) {
+        let calendar = Calendar.current
+        let normalizedDate = calendar.startOfDay(for: date)
+        
+        if let existingRecordIndex = completedTrackers.firstIndex(where: { 
+            $0.trackerId == tracker.id && calendar.isDate($0.date, inSameDayAs: normalizedDate)
+        }) {
+            completedTrackers.remove(at: existingRecordIndex)
+        } else {
+            let record = TrackerRecord(trackerId: tracker.id, date: normalizedDate)
+            completedTrackers.append(record)
+        }
+        
+        collectionView.reloadData()
+    }
+    
+    func getCompletionCount(for trackerId: UInt) -> Int {
+        return completedTrackers.filter { $0.trackerId == trackerId }.count
+    }
+    
+    func isTrackerCompleted(_ trackerId: UInt, on date: Date) -> Bool {
+        let calendar = Calendar.current
+        let normalizedDate = calendar.startOfDay(for: date)
+        
+        return completedTrackers.contains { record in
+            record.trackerId == trackerId && calendar.isDate(record.date, inSameDayAs: normalizedDate)
+        }
     }
 }
 
@@ -317,7 +363,6 @@ extension TrackersViewController {
     private func updatePlaceholderVisibility() {
         let hasTrackers = !categories.isEmpty && categories.contains { !$0.trackers.isEmpty }
         
-        placeholderImageView.isHidden = hasTrackers
-        placeholderLabel.isHidden = hasTrackers
+        placeholderStackView.isHidden = hasTrackers
     }
 }
