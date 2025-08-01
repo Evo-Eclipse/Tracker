@@ -7,34 +7,7 @@
 
 import UIKit
 
-private final class SpacedTextField: UITextField {
-    override func clearButtonRect(forBounds bounds: CGRect) -> CGRect {
-        var rect = super.clearButtonRect(forBounds: bounds)
-        rect.origin.x = bounds.maxX - 12 - rect.width
-        return rect
-    }
 
-    // Provide extra padding between the text and the clear button so that
-    // there is a 12-pt gap on the left side of the clear button as well.
-    private func adjustedTextRect(forBounds bounds: CGRect) -> CGRect {
-        var rect = super.textRect(forBounds: bounds)
-        // Calculate the frame where the clear button would appear using the
-        // superclass implementation (before our horizontal shift).
-        let clearRect = super.clearButtonRect(forBounds: bounds)
-        // Shrink the text rect so its right edge is 12pt to the left of the
-        // clear button frame, keeping the original left origin intact.
-        rect.size.width = clearRect.minX - 12 - rect.origin.x
-        return rect
-    }
-
-    override func textRect(forBounds bounds: CGRect) -> CGRect {
-        adjustedTextRect(forBounds: bounds)
-    }
-
-    override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        adjustedTextRect(forBounds: bounds)
-    }
-}
 
 protocol NewTrackerViewControllerDelegate: AnyObject {
     func didCreateTracker(_ tracker: Tracker, in category: String)
