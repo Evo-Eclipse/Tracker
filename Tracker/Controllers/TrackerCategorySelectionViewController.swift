@@ -11,7 +11,7 @@ final class TrackerCategorySelectionViewController: UIViewController {
     
     // MARK: - Public Properties
 
-    var onCategorySelected: ((String) -> Void)?
+    var onCategorySelected: ((String?) -> Void)?
     
     // MARK: - Private Properties
     
@@ -119,10 +119,9 @@ final class TrackerCategorySelectionViewController: UIViewController {
             return
         }
         
-        if let selected = selectedCategory {
-            onCategorySelected?(selected)
-            navigationController?.popViewController(animated: true)
-        }
+        // Return selected category or nil if nothing is selected
+        onCategorySelected?(selectedCategory)
+        navigationController?.popViewController(animated: true)
     }
     
     @objc private func textFieldDidChange() {
@@ -140,6 +139,7 @@ final class TrackerCategorySelectionViewController: UIViewController {
     
     private func setupNavigationBar() {
         title = "Категория"
+        navigationItem.hidesBackButton = true
     }
     
     private func setupViews() {

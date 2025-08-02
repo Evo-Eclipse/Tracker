@@ -11,7 +11,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
     
     // MARK: - Public Properties
     
-    weak var trackerDelegate: NewTrackerViewControllerDelegate?
+    weak var trackerDelegate: TrackerCreationFormViewControllerDelegate?
     
     // MARK: - Private Properties
     
@@ -76,6 +76,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
     
     private func setupNavigationBar() {
         title = "Создание трекера"
+        navigationItem.hidesBackButton = true
     }
     
     private func setupViews() {

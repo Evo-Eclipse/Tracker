@@ -1,5 +1,5 @@
 //
-//  NewTrackerViewController.swift
+//  TrackerCreationFormViewController.swift
 //  Tracker
 //
 //  Created by Pavel Komarov on 29.07.2025.
@@ -7,9 +7,7 @@
 
 import UIKit
 
-
-
-protocol NewTrackerViewControllerDelegate: AnyObject {
+protocol TrackerCreationFormViewControllerDelegate: AnyObject {
     func didCreateTracker(_ tracker: Tracker, in category: String)
 }
 
@@ -17,7 +15,7 @@ final class TrackerCreationFormViewController: UIViewController {
     
     // MARK: - Public Properties
     
-    weak var delegate: NewTrackerViewControllerDelegate?
+    weak var delegate: TrackerCreationFormViewControllerDelegate?
     
     // MARK: - Private Properties
     
@@ -119,9 +117,9 @@ final class TrackerCreationFormViewController: UIViewController {
     }
     
     @objc private func createButtonTapped() {
-        guard let title = titleTextField.text,
-              !title.isEmpty,
-              let category = selectedCategory else { return }
+        guard let title = titleTextField.text, !title.isEmpty else { return }
+        
+        let category = selectedCategory ?? "По умолчанию"
         
         if trackerType.hasSchedule && selectedSchedule.isEmpty {
             return
@@ -155,10 +153,9 @@ final class TrackerCreationFormViewController: UIViewController {
         }
         
         let hasTitle = !(titleTextField.text?.isEmpty ?? true)
-        let hasCategory = selectedCategory != nil
         let hasScheduleIfNeeded = !trackerType.hasSchedule || !selectedSchedule.isEmpty
         
-        let isValid = hasTitle && hasCategory && hasScheduleIfNeeded
+        let isValid = hasTitle && hasScheduleIfNeeded
         
         createButton.isEnabled = isValid
         createButton.backgroundColor = isValid ? .ypBlack : .ypGray
@@ -168,6 +165,7 @@ final class TrackerCreationFormViewController: UIViewController {
     
     private func setupNavigationBar() {
         title = trackerType.title
+        navigationItem.hidesBackButton = true
     }
     
     private func setupViews() {

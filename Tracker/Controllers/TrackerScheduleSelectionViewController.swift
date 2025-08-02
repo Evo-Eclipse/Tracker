@@ -62,6 +62,7 @@ final class TrackerScheduleSelectionViewController: UIViewController {
     
     private func setupNavigationBar() {
         title = "Расписание"
+        navigationItem.hidesBackButton = true
     }
     
     private func setupViews() {
