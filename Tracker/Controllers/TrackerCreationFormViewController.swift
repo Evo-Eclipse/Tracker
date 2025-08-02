@@ -103,6 +103,9 @@ final class TrackerCreationFormViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        dismissKeyboardOnTap()
+
+        view.backgroundColor = .ypWhite
         
         setupViews()
         setupConstraints()
@@ -169,8 +172,6 @@ final class TrackerCreationFormViewController: UIViewController {
     }
     
     private func setupViews() {
-        view.backgroundColor = .ypWhite
-        
         [titleTextField, errorLabel, tableView, cancelButton, createButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
@@ -236,7 +237,9 @@ final class TrackerCreationFormViewController: UIViewController {
 // MARK: - UITextFieldDelegate
 
 extension TrackerCreationFormViewController: UITextFieldDelegate {
-    func textFieldDidChangeSelection(_ textField: UITextField) {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 

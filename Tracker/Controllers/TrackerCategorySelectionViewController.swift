@@ -91,6 +91,7 @@ final class TrackerCategorySelectionViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        dismissKeyboardOnTap()
         
         view.backgroundColor = .ypWhite
         
