@@ -194,21 +194,13 @@ final class TrackerCreationFormViewController: UIViewController {
     }
     
     @objc private func textFieldDidChange() {
-        let isTitleValid = !(titleTextField.text?.isEmpty ?? true)
-        let isScheduleSelected = trackerType.hasSchedule ? !selectedSchedule.isEmpty : true
-        let isEmojiSelected = selectedEmoji != nil
-        let isColorSelected = selectedColor != nil
-
-        createButton.isEnabled = isTitleValid && isScheduleSelected && isEmojiSelected && isColorSelected
-        
         if titleTextField.text?.count ?? 0 > 38 {
             titleTextField.text = String((titleTextField.text ?? "").prefix(38))
             setErrorHidden(false)
         } else {
             setErrorHidden(true)
         }
-        
-        createButton.backgroundColor = createButton.isEnabled ? .ypBlack : .ypGray
+        updateCreateButtonState()
     }
     
     // MARK: - Private Methods
@@ -287,6 +279,16 @@ final class TrackerCreationFormViewController: UIViewController {
             createButton.widthAnchor.constraint(equalToConstant: 161),
             createButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+    
+    private func updateCreateButtonState() {
+        let isTitleValid = !(titleTextField.text?.isEmpty ?? true)
+        let isScheduleSelected = trackerType.hasSchedule ? !selectedSchedule.isEmpty : true
+        let isEmojiSelected = selectedEmoji != nil
+        let isColorSelected = selectedColor != nil
+        
+        createButton.isEnabled = isTitleValid && isScheduleSelected && isEmojiSelected && isColorSelected
+        createButton.backgroundColor = createButton.isEnabled ? .ypBlack : .ypGray
     }
     
     private func setErrorHidden(_ hidden: Bool) {
@@ -486,7 +488,7 @@ extension TrackerCreationFormViewController: UICollectionViewDelegate {
                 selectedColor = UIColor.selectionColors[indexPath.item]
             }
         }
-        textFieldDidChange()
+        updateCreateButtonState()
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -514,7 +516,7 @@ extension TrackerCreationFormViewController: UITableViewDelegate {
             let categoryVC = TrackerCategorySelectionViewController()
             categoryVC.onCategorySelected = { [weak self] selectedCategory in
                 self?.selectedCategory = selectedCategory
-                self?.textFieldDidChange()
+                self?.updateCreateButtonState()
                 self?.tableView.reloadData()
             }
             navigationController?.pushViewController(categoryVC, animated: true)
@@ -522,7 +524,7 @@ extension TrackerCreationFormViewController: UITableViewDelegate {
             let scheduleVC = TrackerScheduleSelectionViewController()
             scheduleVC.onScheduleSelected = { [weak self] selectedDays in
                 self?.selectedSchedule = selectedDays
-                self?.textFieldDidChange()
+                self?.updateCreateButtonState()
                 self?.tableView.reloadData()
             }
             navigationController?.pushViewController(scheduleVC, animated: true)
