@@ -84,7 +84,6 @@ final class TrackersViewController: UIViewController {
         return formatter
     }()
     
-    private var completedTrackers: [TrackerRecord] = []
     private var currentDate: Date = Date()
 
     private var categories: [TrackerCategory] = []
@@ -358,31 +357,15 @@ extension TrackersViewController: TrackerCreationFormViewControllerDelegate {
 
 extension TrackersViewController: TrackerCellDelegate {
     func didToggleTracker(_ tracker: Tracker, on date: Date) {
-        let calendar = Calendar.current
-        let normalizedDate = calendar.startOfDay(for: date)
-        
-        if let existingRecordIndex = completedTrackers.firstIndex(where: { 
-            $0.trackerId == tracker.id && calendar.isDate($0.date, inSameDayAs: normalizedDate)
-        }) {
-            completedTrackers.remove(at: existingRecordIndex)
-        } else {
-            let record = TrackerRecord(trackerId: tracker.id, date: normalizedDate)
-            completedTrackers.append(record)
-        }
-        
+        StoreProvider.shared.recordStore.toggle(trackerId: tracker.id, on: date)
         collectionView.reloadData()
     }
     
-    func getCompletionCount(for trackerId: UInt) -> Int {
-        return completedTrackers.filter { $0.trackerId == trackerId }.count
+    func getCompletionCount(for trackerId: UUID) -> Int {
+        return StoreProvider.shared.recordStore.getCompletionCount(for: trackerId)
     }
     
-    func isTrackerCompleted(_ trackerId: UInt, on date: Date) -> Bool {
-        let calendar = Calendar.current
-        let normalizedDate = calendar.startOfDay(for: date)
-        
-        return completedTrackers.contains { record in
-            record.trackerId == trackerId && calendar.isDate(record.date, inSameDayAs: normalizedDate)
-        }
+    func isTrackerCompleted(_ trackerId: UUID, on date: Date) -> Bool {
+        return StoreProvider.shared.recordStore.isCompleted(trackerId: trackerId, on: date)
     }
 }

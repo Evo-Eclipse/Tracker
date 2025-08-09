@@ -182,7 +182,7 @@ final class TrackerCreationFormViewController: UIViewController {
         let schedule = trackerType.hasSchedule ? Array(selectedSchedule) : Weekday.allCases
 
         let newTracker = Tracker(
-            id: UInt.random(in: 1...UInt.max),  // Временное решение для ID
+            id: UUID(),
             title: title,
             color: color,
             emoji: emoji,
