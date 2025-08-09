@@ -85,8 +85,6 @@ final class TrackersViewController: UIViewController {
     }()
     
     private var currentDate: Date = Date()
-
-    private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
 
     // MARK: - Overrides Methods
@@ -95,11 +93,13 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .ypWhite
+        StoreProvider.shared.trackerStore.delegate = self
         
         setupNavigationBar()
         setupViews()
         setupConstraints()
         setupDefaultCategory()
+        filterVisibleTrackers()
     }
     
     // MARK: - Actions
@@ -156,8 +156,8 @@ final class TrackersViewController: UIViewController {
     }
     
     private func setupDefaultCategory() {
-        let defaultCategory = TrackerCategory(title: "По умолчанию", trackers: [])
-        categories.append(defaultCategory)
+        let defaultCategoryTitle = "По умолчанию"
+        StoreProvider.shared.categoryStore.createCategory(title: defaultCategoryTitle)
     }
     
     private func presentModalViewController() {
@@ -165,38 +165,6 @@ final class TrackersViewController: UIViewController {
         modalViewController.trackerDelegate = self
         let navigationController = UINavigationController(rootViewController: modalViewController)
         present(navigationController, animated: true)
-    }
-
-    private func addTracker(_ tracker: Tracker, to categoryTitle: String) {
-        if let categoryIndex = categories.firstIndex(where: { $0.title == categoryTitle }) {
-            var updatedCategory = categories[categoryIndex]
-            var updatedTrackers = updatedCategory.trackers
-            updatedTrackers.append(tracker)
-            updatedCategory = TrackerCategory(title: updatedCategory.title, trackers: updatedTrackers)
-            categories[categoryIndex] = updatedCategory
-        } else {
-            let newCategory = TrackerCategory(title: categoryTitle, trackers: [tracker])
-            categories.append(newCategory)
-        }
-        
-        filterVisibleTrackers()
-    }
-    
-    private func removeTracker(at indexPath: IndexPath) {
-        var categoryTrackers = categories[indexPath.section].trackers
-        categoryTrackers.remove(at: indexPath.item)
-        
-        if categoryTrackers.isEmpty {
-            categories.remove(at: indexPath.section)
-        } else {
-            let updatedCategory = TrackerCategory(
-                title: categories[indexPath.section].title,
-                trackers: categoryTrackers
-            )
-            categories[indexPath.section] = updatedCategory
-        }
-        
-        updateUI()
     }
     
     private func updateUI() {
@@ -207,23 +175,12 @@ final class TrackersViewController: UIViewController {
     }
     
     private func updatePlaceholderVisibility() {
-        let hasTrackers = !categories.isEmpty && categories.contains { !$0.trackers.isEmpty }
-        
+        let hasTrackers = visibleCategories.contains { !$0.trackers.isEmpty }
         placeholderStackView.isHidden = hasTrackers
     }
 
     private func filterVisibleTrackers() {
-        let calendar = Calendar.current
-        let weekdayIndex = calendar.component(.weekday, from: currentDate)
-        let weekday = Weekday.fromSystemIndex(weekdayIndex)
-
-        visibleCategories = categories.compactMap { category in
-            let filteredTrackers = category.trackers.filter { tracker in
-                tracker.schedule.contains(weekday) || tracker.schedule.isEmpty
-            }
-            return filteredTrackers.isEmpty ? nil : TrackerCategory(title: category.title, trackers: filteredTrackers)
-        }
-
+        visibleCategories = StoreProvider.shared.trackerStore.snapshotFiltered(date: currentDate, searchText: searchBar.text)
         updateUI()
     }
     
@@ -294,8 +251,7 @@ final class TrackersViewController: UIViewController {
 
 extension TrackersViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        // TODO: Handle search text change
-        print("Search text: \(searchText)")
+        filterVisibleTrackers()
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -329,7 +285,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             for: indexPath
         ) as! TrackerHeaderView
         
-        let categoryTitle = categories[indexPath.section].title
+        let categoryTitle = visibleCategories[indexPath.section].title
         header.configure(with: categoryTitle)
         
         return header
@@ -340,7 +296,7 @@ extension TrackersViewController: UICollectionViewDataSource {
 
 extension TrackersViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let tracker = categories[indexPath.section].trackers[indexPath.item]
+        let tracker = visibleCategories[indexPath.section].trackers[indexPath.item]
         print("Selected tracker: \(tracker.title)")
     }
 }
@@ -349,7 +305,7 @@ extension TrackersViewController: UICollectionViewDelegate {
 
 extension TrackersViewController: TrackerCreationFormViewControllerDelegate {
     func didCreateTracker(_ tracker: Tracker, in category: String) {
-        addTracker(tracker, to: category)
+        StoreProvider.shared.trackerStore.createTracker(tracker, in: category)
     }
 }
 
@@ -367,5 +323,14 @@ extension TrackersViewController: TrackerCellDelegate {
     
     func isTrackerCompleted(_ trackerId: UUID, on date: Date) -> Bool {
         return StoreProvider.shared.recordStore.isCompleted(trackerId: trackerId, on: date)
+    }
+}
+
+// MARK: - TrackerStoreDelegate
+
+extension TrackersViewController: TrackerStoreDelegate {
+    func trackerStoreDidChange(sectionChanges: [StoreSectionChange], objectChanges: [StoreObjectChange]) {
+        // Rebuild snapshot on any underlying data change
+        filterVisibleTrackers()
     }
 }

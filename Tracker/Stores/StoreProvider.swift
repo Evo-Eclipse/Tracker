@@ -35,5 +35,8 @@ final class StoreProvider {
         self.categoryStore = TrackerCategoryStore(container: container)
         self.trackerStore = TrackerStore(container: container)
         self.recordStore = TrackerRecordStore(container: container)
+        
+        // Print of all trackers for debugging purposes
+        print("All trackers: \(trackerStore.snapshotFiltered(date: Date(), searchText: nil))")
     }
 }
