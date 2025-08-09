@@ -84,6 +84,10 @@ final class TrackersViewController: UIViewController {
         return formatter
     }()
     
+    private let trackerStore = TrackerStore()
+    private let categoryStore = TrackerCategoryStore()
+    private let recordStore = TrackerRecordStore()
+    
     private var currentDate: Date = Date()
     private var visibleCategories: [TrackerCategory] = []
 
@@ -93,7 +97,7 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .ypWhite
-        StoreProvider.shared.trackerStore.delegate = self
+        trackerStore.delegate = self
         
         setupNavigationBar()
         setupViews()
@@ -157,7 +161,7 @@ final class TrackersViewController: UIViewController {
     
     private func setupDefaultCategory() {
         let defaultCategoryTitle = "По умолчанию"
-        StoreProvider.shared.categoryStore.createCategory(title: defaultCategoryTitle)
+        categoryStore.createCategory(title: defaultCategoryTitle)
     }
     
     private func presentModalViewController() {
@@ -180,7 +184,7 @@ final class TrackersViewController: UIViewController {
     }
 
     private func filterVisibleTrackers() {
-        visibleCategories = StoreProvider.shared.trackerStore.snapshotFiltered(date: currentDate, searchText: searchBar.text)
+        visibleCategories = trackerStore.snapshotFiltered(date: currentDate, searchText: searchBar.text)
         updateUI()
     }
     
@@ -305,7 +309,7 @@ extension TrackersViewController: UICollectionViewDelegate {
 
 extension TrackersViewController: TrackerCreationFormViewControllerDelegate {
     func didCreateTracker(_ tracker: Tracker, in category: String) {
-        StoreProvider.shared.trackerStore.createTracker(tracker, in: category)
+        trackerStore.createTracker(tracker, in: category)
     }
 }
 
@@ -313,16 +317,16 @@ extension TrackersViewController: TrackerCreationFormViewControllerDelegate {
 
 extension TrackersViewController: TrackerCellDelegate {
     func didToggleTracker(_ tracker: Tracker, on date: Date) {
-        StoreProvider.shared.recordStore.toggle(trackerId: tracker.id, on: date)
+        recordStore.toggle(trackerId: tracker.id, on: date)
         collectionView.reloadData()
     }
     
     func getCompletionCount(for trackerId: UUID) -> Int {
-        return StoreProvider.shared.recordStore.getCompletionCount(for: trackerId)
+        return recordStore.getCompletionCount(for: trackerId)
     }
     
     func isTrackerCompleted(_ trackerId: UUID, on date: Date) -> Bool {
-        return StoreProvider.shared.recordStore.isCompleted(trackerId: trackerId, on: date)
+        return recordStore.isCompleted(trackerId: trackerId, on: date)
     }
 }
 

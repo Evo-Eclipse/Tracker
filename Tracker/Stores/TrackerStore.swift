@@ -5,7 +5,6 @@
 //  Created by Pavel Komarov on 08.08.2025.
 //
 
-import Foundation
 import UIKit
 import CoreData
 
@@ -49,6 +48,14 @@ final class TrackerStore: NSObject {
         self.context = container.viewContext
         super.init()
         try? fetchedResultsController.performFetch()
+    }
+
+    convenience override init() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            fatalError("AppDelegate не доступен")
+        }
+        
+        self.init(container: appDelegate.persistentContainer)
     }
 
     // MARK: - Public Methods
