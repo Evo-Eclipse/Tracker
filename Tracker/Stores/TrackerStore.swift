@@ -109,6 +109,39 @@ final class TrackerStore: NSObject {
         return mapToDomain(obj)
     }
 
+    // Build a filtered snapshot grouped by category title for UI consumption
+    func snapshotFiltered(date: Date, searchText: String?) -> [TrackerCategory] {
+        let calendar = Calendar.current
+        let weekdayIndex = calendar.component(.weekday, from: date)
+        let weekday = Weekday.fromSystemIndex(weekdayIndex)
+
+        // Prepare case-insensitive search if provided
+        let query = (searchText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "")
+        let hasQuery = !query.isEmpty
+
+        var result: [TrackerCategory] = []
+        
+        let sectionsCount = numberOfSections()
+        for section in 0..<sectionsCount {
+            let title = titleForSection(section)
+            var trackers: [Tracker] = []
+            let items = numberOfItems(in: section)
+            for row in 0..<items {
+                let t = tracker(at: IndexPath(item: row, section: section))
+                // Filter by weekday schedule (empty schedule means every day)
+                let matchesDay = t.schedule.isEmpty || t.schedule.contains(weekday)
+                if !matchesDay { continue }
+                // Filter by search query
+                if hasQuery, t.title.range(of: query, options: [.caseInsensitive, .diacriticInsensitive]) == nil { continue }
+                trackers.append(t)
+            }
+            if !trackers.isEmpty {
+                result.append(TrackerCategory(title: title, trackers: trackers))
+            }
+        }
+        return result
+    }
+
     // MARK: - Private Methods
 
     private func fetchOrCreateCategory(with title: String, in ctx: NSManagedObjectContext) -> TrackerCategoryCoreData {
