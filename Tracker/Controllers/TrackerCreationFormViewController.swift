@@ -175,7 +175,7 @@ final class TrackerCreationFormViewController: UIViewController {
     @objc private func createButtonTapped() {
         guard let title = titleTextField.text, !title.isEmpty,
               let emoji = selectedEmoji,
-              let color = selectedColor
+              let uiColor = selectedColor
         else { return }
 
         let category = selectedCategory ?? "По умолчанию"
@@ -184,7 +184,7 @@ final class TrackerCreationFormViewController: UIViewController {
         let newTracker = Tracker(
             id: UUID(),
             title: title,
-            color: color,
+            color: uiColor.appColor,
             emoji: emoji,
             schedule: schedule
         )

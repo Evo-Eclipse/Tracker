@@ -5,7 +5,6 @@
 //  Created by Pavel Komarov on 08.08.2025.
 //
 
-import UIKit
 import CoreData
 
 protocol TrackerRecordStoreDelegate: AnyObject {
@@ -30,15 +29,7 @@ final class TrackerRecordStore: NSObject {
         self.context = container.viewContext
         super.init()
     }
-
-    convenience override init() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            fatalError("AppDelegate не доступен")
-        }
-
-        self.init(container: appDelegate.persistentContainer)
-    }
-
+    
     // MARK: - Public Methods
 
     func isCompleted(trackerId: UUID, on date: Date) -> Bool {

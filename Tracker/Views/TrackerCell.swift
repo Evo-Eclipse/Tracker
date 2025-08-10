@@ -96,8 +96,10 @@ final class TrackerCell: UICollectionViewCell {
         self.tracker = tracker
         self.currentDate = date
         
-        cardView.backgroundColor = tracker.color
-        completeButton.tintColor = tracker.color
+        let appColor = tracker.color
+        let uiColor = UIColor(appColor: appColor)
+        cardView.backgroundColor = uiColor
+        completeButton.tintColor = uiColor
         
         emojiLabel.text = tracker.emoji
         titleLabel.text = tracker.title

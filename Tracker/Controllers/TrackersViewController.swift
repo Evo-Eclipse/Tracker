@@ -84,9 +84,9 @@ final class TrackersViewController: UIViewController {
         return formatter
     }()
     
-    private let trackerStore = TrackerStore()
-    private let categoryStore = TrackerCategoryStore()
-    private let recordStore = TrackerRecordStore()
+    private var trackerStore: TrackerStore!
+    private var categoryStore: TrackerCategoryStore!
+    private var recordStore: TrackerRecordStore!
     
     private var currentDate: Date = Date()
     private var visibleCategories: [TrackerCategory] = []
@@ -97,6 +97,13 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .ypWhite
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            trackerStore = appDelegate.trackerStore
+            categoryStore = appDelegate.categoryStore
+            recordStore = appDelegate.recordStore
+        } else {
+            assertionFailure("AppDelegate unavailable")
+        }
         trackerStore.delegate = self
         
         setupNavigationBar()
