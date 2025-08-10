@@ -373,11 +373,11 @@ extension TrackersViewController: TrackerCellDelegate {
         collectionView.reloadData()
     }
     
-    func getCompletionCount(for trackerId: UInt) -> Int {
+    func getCompletionCount(for trackerId: UUID) -> Int {
         return completedTrackers.filter { $0.trackerId == trackerId }.count
     }
     
-    func isTrackerCompleted(_ trackerId: UInt, on date: Date) -> Bool {
+    func isTrackerCompleted(_ trackerId: UUID, on date: Date) -> Bool {
         let calendar = Calendar.current
         let normalizedDate = calendar.startOfDay(for: date)
         
