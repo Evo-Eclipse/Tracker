@@ -9,8 +9,8 @@ import UIKit
 
 protocol TrackerCellDelegate: AnyObject {
     func didToggleTracker(_ tracker: Tracker, on date: Date)
-    func getCompletionCount(for trackerId: UInt) -> Int
-    func isTrackerCompleted(_ trackerId: UInt, on date: Date) -> Bool
+    func getCompletionCount(for trackerId: UUID) -> Int
+    func isTrackerCompleted(_ trackerId: UUID, on date: Date) -> Bool
 }
 
 final class TrackerCell: UICollectionViewCell {
@@ -96,8 +96,10 @@ final class TrackerCell: UICollectionViewCell {
         self.tracker = tracker
         self.currentDate = date
         
-        cardView.backgroundColor = tracker.color
-        completeButton.tintColor = tracker.color
+        let appColor = tracker.color
+        let uiColor = UIColor(appColor: appColor)
+        cardView.backgroundColor = uiColor
+        completeButton.tintColor = uiColor
         
         emojiLabel.text = tracker.emoji
         titleLabel.text = tracker.title
