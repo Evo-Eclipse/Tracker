@@ -15,30 +15,6 @@ final class TrackerCategorySelectionViewController: UIViewController {
     
     // MARK: - Private Properties
     
-    private lazy var titleTextField: UITextField = {
-        let textField = SpacedTextField()
-        textField.placeholder = "Введите название категории"
-        textField.font = .systemFont(ofSize: 17, weight: .regular)
-        textField.backgroundColor = .ypBackground.withAlphaComponent(0.3)
-        textField.layer.cornerRadius = 16
-        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
-        textField.leftViewMode = .always
-        textField.clearButtonMode = .whileEditing
-        textField.delegate = self
-        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        return textField
-    }()
-    
-    private lazy var errorLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Ограничение \(maxTitleLength) символов"
-        label.font = .systemFont(ofSize: 17, weight: .regular)
-        label.textColor = .ypRed
-        label.textAlignment = .center
-        label.isHidden = true
-        return label
-    }()
-    
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .clear
@@ -49,42 +25,45 @@ final class TrackerCategorySelectionViewController: UIViewController {
         return tableView
     }()
     
-    private lazy var emptyStateLabel: UILabel = {
+    private lazy var placeholderStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.alignment = .center
+        stackView.distribution = .fill
+        return stackView
+    }()
+    
+    private lazy var placeholderImageView: UIImageView = {
+        let view = UIImageView()
+        view.image = UIImage(named: "icon_dizzy")
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
+    
+    private lazy var placeholderLabel: UILabel = {
         let label = UILabel()
         label.text = "Привычки и события можно\nобъединить по смыслу"
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlack
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.isHidden = !categories.isEmpty
         return label
     }()
     
-    private lazy var doneButton: UIButton = {
+    private lazy var addCategoryButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle("Добавить категорию", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypBlack
         button.layer.cornerRadius = 16
-        button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(addCategoryButtonTapped), for: .touchUpInside)
         return button
     }()
     
-    private var tableViewTopConstraint: NSLayoutConstraint!
-    private var errorLabelHeightConstraint: NSLayoutConstraint!
-
     private let maxTitleLength = 38
-    private var categories: [String] = [
-        "Важное",
-        "Здоровье", 
-        "Обучение",
-        "Работа",
-        "Развлечения",
-        "Спорт",
-        "Творчество",
-        "Хобби"
-    ]
+    private var categories: [String] = []
     private var selectedCategory: String?
     
     // MARK: - Override Methods
@@ -103,37 +82,8 @@ final class TrackerCategorySelectionViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc private func doneButtonTapped() {
-        if let newCategoryText = titleTextField.text,
-           !newCategoryText.trimmingCharacters(in: .whitespaces).isEmpty {
-            let trimmedText = newCategoryText.trimmingCharacters(in: .whitespaces)
-            
-            if !categories.contains(trimmedText) {
-                categories.append(trimmedText)
-                categories.sort()
-                tableView.reloadData()
-                updateEmptyState()
-            }
-            
-            onCategorySelected?(trimmedText)
-            navigationController?.popViewController(animated: true)
-            return
-        }
-        
-        // Return selected category or nil if nothing is selected
-        onCategorySelected?(selectedCategory)
-        navigationController?.popViewController(animated: true)
-    }
-    
-    @objc private func textFieldDidChange() {
-        let text = titleTextField.text ?? ""
-        
-        if text.count >= maxTitleLength {
-            titleTextField.text = String(text.prefix(maxTitleLength))
-            setErrorHidden(false)
-        } else {
-            setErrorHidden(true)
-        }
+    @objc private func addCategoryButtonTapped() {
+        presentNewCategoryViewController()
     }
     
     // MARK: - Private Methods
@@ -143,78 +93,59 @@ final class TrackerCategorySelectionViewController: UIViewController {
         navigationItem.hidesBackButton = true
     }
     
+    private func presentNewCategoryViewController() {
+        let newCategoryVC = TrackerNewCategoryViewController()
+        newCategoryVC.onCategoryCreated = { [weak self] newCategory in
+            guard let self = self else { return }
+            
+            if !self.categories.contains(newCategory) {
+                self.categories.append(newCategory)
+                self.categories.sort()
+                self.tableView.reloadData()
+                self.updateEmptyState()
+            }
+            
+            self.selectedCategory = newCategory
+            self.tableView.reloadData()
+        }
+        
+        let navigationController = UINavigationController(rootViewController: newCategoryVC)
+        present(navigationController, animated: true)
+    }
+    
     private func setupViews() {
-        [titleTextField, errorLabel, tableView, emptyStateLabel, doneButton].forEach {
+        [tableView, placeholderStackView, addCategoryButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
+        }
+        
+        [placeholderImageView, placeholderLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            placeholderStackView.addArrangedSubview($0)
         }
     }
     
     private func setupConstraints() {
-        tableViewTopConstraint = tableView.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 32)
-        errorLabelHeightConstraint = errorLabel.heightAnchor.constraint(equalToConstant: 0)
-        
         NSLayoutConstraint.activate([
-            titleTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            titleTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            titleTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            titleTextField.heightAnchor.constraint(equalToConstant: 75),
-            
-            errorLabel.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 8),
-            errorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            errorLabelHeightConstraint,
-            
-            tableViewTopConstraint,
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -16),
+            tableView.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor, constant: -16),
             
-            emptyStateLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyStateLabel.centerYAnchor.constraint(equalTo: tableView.centerYAnchor),
-            emptyStateLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
-            emptyStateLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -16),
+            placeholderStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
-            doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            doneButton.heightAnchor.constraint(equalToConstant: 60)
+            addCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            addCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            addCategoryButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
     
-    private func setErrorHidden(_ hidden: Bool) {
-        let wasHidden = errorLabel.isHidden
-        errorLabel.isHidden = hidden
-        
-        /// Avoid unnecessary animations on first show
-        if wasHidden == hidden {
-            return
-        }
-        
-        if hidden {
-            errorLabelHeightConstraint.constant = 0
-            tableViewTopConstraint.constant = 32
-        } else {
-            errorLabelHeightConstraint.constant = 22
-            tableViewTopConstraint.constant = 54
-        }
-        
-        UIView.animate(withDuration: 0.25) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
     private func updateEmptyState() {
-        emptyStateLabel.isHidden = !categories.isEmpty
-    }
-}
-
-// MARK: - UITextFieldDelegate
-
-extension TrackerCategorySelectionViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
+        let isEmpty = categories.isEmpty
+        placeholderStackView.isHidden = !isEmpty
+        tableView.isHidden = isEmpty
     }
 }
 
@@ -258,6 +189,7 @@ extension TrackerCategorySelectionViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedCategory = categories[indexPath.row]
-        tableView.reloadData()  // Update checkmarks
+        onCategorySelected?(selectedCategory)
+        navigationController?.popViewController(animated: true)
     }
 }
