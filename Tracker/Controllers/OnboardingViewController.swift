@@ -91,6 +91,9 @@ final class OnboardingViewController: UIPageViewController {
             return
         }
 
+        // Persist completion so onboarding won't show next launches
+        UserStore.shared.isOnboardingCompleted = true
+
         let tabBarViewController = TabBarViewController()
         window.rootViewController = tabBarViewController
 
