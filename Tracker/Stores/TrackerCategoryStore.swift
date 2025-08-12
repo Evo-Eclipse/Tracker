@@ -45,13 +45,12 @@ final class TrackerCategoryStore: NSObject {
         super.init()
         try? fetchedResultsController.performFetch()
     }
-    
+
     // MARK: - Public Methods
 
     func createCategory(title: String) {
         container.performBackgroundTask { ctx in
-            // If category exists, do nothing
-            if let _ = self.fetchCategory(title: title, in: ctx) { return }
+            if let _ = self.fetchCategory(title: title, in: ctx) { return }  // If category exists, do nothing
             let cat = TrackerCategoryCoreData(context: ctx)
             cat.title = title
             do { try ctx.save() } catch { print("[CategoryStore] save error: \(error)") }
@@ -64,6 +63,10 @@ final class TrackerCategoryStore: NSObject {
             ctx.delete(cat)
             do { try ctx.save() } catch { print("[CategoryStore] delete error: \(error)") }
         }
+    }
+
+    func getAllCategories() -> [TrackerCategoryCoreData] {
+        return fetchedResultsController.fetchedObjects ?? []
     }
 
     // MARK: - Private Methods

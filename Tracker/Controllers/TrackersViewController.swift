@@ -109,7 +109,6 @@ final class TrackersViewController: UIViewController {
         setupNavigationBar()
         setupViews()
         setupConstraints()
-        setupDefaultCategory()
         filterVisibleTrackers()
     }
     
@@ -164,11 +163,6 @@ final class TrackersViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
-    }
-    
-    private func setupDefaultCategory() {
-        let defaultCategoryTitle = "По умолчанию"
-        categoryStore.createCategory(title: defaultCategoryTitle)
     }
     
     private func presentModalViewController() {
@@ -341,7 +335,6 @@ extension TrackersViewController: TrackerCellDelegate {
 
 extension TrackersViewController: TrackerStoreDelegate {
     func trackerStoreDidChange(sectionChanges: [StoreSectionChange], objectChanges: [StoreObjectChange]) {
-        // Rebuild snapshot on any underlying data change
         filterVisibleTrackers()
     }
 }
