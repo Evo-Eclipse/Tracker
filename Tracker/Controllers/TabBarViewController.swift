@@ -7,30 +7,28 @@
 
 import UIKit
 
-import UIKit
-
 final class TabBarViewController: UITabBarController {
-    
+
     // MARK: - Overrides Methods
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupTabBar()
         setupViewControllers()
     }
-    
+
     // MARK: - Private Methods
-    
+
     private func setupTabBar() {
         tabBar.tintColor = .ypBlue
         tabBar.unselectedItemTintColor = .ypGray
-        
+
         if #available(iOS 13.0, *) {
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = .ypWhite
-            
+
             tabBar.standardAppearance = appearance
             tabBar.scrollEdgeAppearance = appearance
         } else {
@@ -38,7 +36,7 @@ final class TabBarViewController: UITabBarController {
             tabBar.isTranslucent = false
         }
     }
-    
+
     private func setupViewControllers() {
         let trackersViewController = TrackersViewController()
         let trackersNavigationController = UINavigationController(rootViewController: trackersViewController)
@@ -47,14 +45,14 @@ final class TabBarViewController: UITabBarController {
             image: UIImage(systemName: "record.circle.fill"),  // record.circle
             selectedImage: UIImage(systemName: "record.circle.fill")
         )
-        
+
         let statisticsViewController = StatisticsViewController()
         statisticsViewController.tabBarItem = UITabBarItem(
             title: "Статистика",
             image: UIImage(systemName: "hare.fill"),  // hare
             selectedImage: UIImage(systemName: "hare.fill")
         )
-        
+
         viewControllers = [trackersNavigationController, statisticsViewController]
     }
 }

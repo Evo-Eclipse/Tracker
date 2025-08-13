@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
@@ -17,9 +17,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
+
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = SplashViewController()
+
+        if UserStore.shared.isOnboardingCompleted {
+            window?.rootViewController = TabBarViewController()
+        } else {
+            window?.rootViewController = OnboardingViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
+        }
+
         window?.makeKeyAndVisible()
     }
 
@@ -53,4 +59,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 }
-
