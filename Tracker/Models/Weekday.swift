@@ -10,25 +10,25 @@ enum Weekday: Int, CaseIterable {
 
     var long: String {
         switch self {
-        case .monday: return "Понедельник"
-        case .tuesday: return "Вторник"
-        case .wednesday: return "Среда"
-        case .thursday: return "Четверг"
-        case .friday: return "Пятница"
-        case .saturday: return "Суббота"
-        case .sunday: return "Воскресенье"
+        case .monday: return L10n.DaysOfWeek.monday
+        case .tuesday: return L10n.DaysOfWeek.tuesday
+        case .wednesday: return L10n.DaysOfWeek.wednesday
+        case .thursday: return L10n.DaysOfWeek.thursday
+        case .friday: return L10n.DaysOfWeek.friday
+        case .saturday: return L10n.DaysOfWeek.saturday
+        case .sunday: return L10n.DaysOfWeek.sunday
         }
     }
 
     var short: String {
         switch self {
-        case .monday: return "Пн"
-        case .tuesday: return "Вт"
-        case .wednesday: return "Ср"
-        case .thursday: return "Чт"
-        case .friday: return "Пт"
-        case .saturday: return "Сб"
-        case .sunday: return "Вс"
+        case .monday: return L10n.DaysOfWeek.mondayShort
+        case .tuesday: return L10n.DaysOfWeek.tuesdayShort
+        case .wednesday: return L10n.DaysOfWeek.wednesdayShort
+        case .thursday: return L10n.DaysOfWeek.thursdayShort
+        case .friday: return L10n.DaysOfWeek.fridayShort
+        case .saturday: return L10n.DaysOfWeek.saturdayShort
+        case .sunday: return L10n.DaysOfWeek.sundayShort
         }
     }
 

@@ -1,0 +1,58 @@
+/*
+  Localizable.strings
+  Tracker
+
+  Created by Pavel Komarov on 13.08.2025.
+
+*/
+
+"cancelButton" = "Annuleren";
+"createButton" = "Maken";
+"doneButton" = "Klaar";
+"addCategoryButton" = "Categorie toevoegen";
+"onboardingButton" = "Dit zijn de technologieën!";
+
+"habitType" = "Gewoonte";
+"irregularEventType" = "Onregelmatige gebeurtenis";
+"newHabitTitle" = "Nieuwe gewoonte";
+"newIrregularEventTitle" = "Nieuwe onregelmatige gebeurtenis";
+
+"trackersTab" = "Trackers";
+"statisticsTab" = "Statistieken";
+"scheduleTitle" = "Schema";
+"categoryTitle" = "Categorie";
+"trackerCreationTitle" = "Tracker maken";
+"newCategoryTitle" = "Nieuwe categorie";
+"emojiSectionTitle" = "Emoji";
+"colorSectionTitle" = "Kleur";
+
+"trackerNamePlaceholder" = "Voer tracker naam in";
+"categoryNamePlaceholder" = "Voer categorie naam in";
+"searchPlaceholder" = "Zoeken";
+
+"mondayFull" = "Maandag";
+"tuesdayFull" = "Dinsdag";
+"wednesdayFull" = "Woensdag";
+"thursdayFull" = "Donderdag";
+"fridayFull" = "Vrijdag";
+"saturdayFull" = "Zaterdag";
+"sundayFull" = "Zondag";
+
+"mondayShort" = "Ma";
+"tuesdayShort" = "Di";
+"wednesdayShort" = "Wo";
+"thursdayShort" = "Do";
+"fridayShort" = "Vr";
+"saturdayShort" = "Za";
+"sundayShort" = "Zo";
+
+"emptyTrackersMessage" = "Wat gaan we volgen?";
+"onboardingFirstPage" = "Volg alleen wat je wilt";
+"onboardingSecondPage" = "Zelfs als het geen liters water en yoga is";
+"categoriesDescription" = "Gewoontes en gebeurtenissen kunnen\nworden gecombineerd op betekenis";
+"characterLimitMessage" = "38 karakters limiet";
+"characterLimitTemplate" = "%d karakters limiet";
+"everyDaySchedule" = "Elke dag";
+"defaultCategoryName" = "Standaard";
+
+"daysCount" = "dagen";

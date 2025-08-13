@@ -21,7 +21,7 @@ final class TrackerCreationFormViewController: UIViewController {
 
     private lazy var titleTextField: UITextField = {
         let textField = SpacedTextField()
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = L10n.Placeholder.trackerName
         textField.font = .systemFont(ofSize: 17, weight: .regular)
         textField.backgroundColor = .ypBackground.withAlphaComponent(0.3)
         textField.layer.cornerRadius = 16
@@ -35,7 +35,7 @@ final class TrackerCreationFormViewController: UIViewController {
 
     private lazy var errorLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение \(maxTitleLength) символов"
+        label.text = MessageFormatter.characterLimitTemplate(maxTitleLength)
         label.font = .systemFont(ofSize: 17, weight: .regular)
         label.textColor = .ypRed
         label.textAlignment = .center
@@ -56,7 +56,7 @@ final class TrackerCreationFormViewController: UIViewController {
 
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(L10n.Button.cancel, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypRed, for: .normal)
         button.backgroundColor = .clear
@@ -81,7 +81,7 @@ final class TrackerCreationFormViewController: UIViewController {
 
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
-        label.text = "Emoji"
+        label.text = L10n.Navigation.emoji
         label.font = .systemFont(ofSize: 19, weight: .bold)
         return label
     }()
@@ -112,14 +112,14 @@ final class TrackerCreationFormViewController: UIViewController {
 
     private lazy var colorLabel: UILabel = {
         let label = UILabel()
-        label.text = "Цвет"
+        label.text = L10n.Navigation.color
         label.font = .systemFont(ofSize: 19, weight: .bold)
         return label
     }()
 
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Создать", for: .normal)
+        button.setTitle(L10n.Button.create, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypGray
@@ -180,7 +180,7 @@ final class TrackerCreationFormViewController: UIViewController {
         else { return }
 
         let trimmedTitle = title.trimmingCharacters(in: .whitespaces)
-        let category = selectedCategory ?? "По умолчанию"
+        let category = selectedCategory ?? L10n.Message.defaultCategory
         let schedule = trackerType.hasSchedule ? Array(selectedSchedule) : Weekday.allCases
 
         let newTracker = Tracker(
@@ -357,14 +357,14 @@ extension TrackerCreationFormViewController: UITableViewDataSource {
         containerView.addSubview(subtitleLabel)
 
         if indexPath.row == 0 {
-            titleLabel.text = "Категория"
+            titleLabel.text = L10n.Navigation.category
             subtitleLabel.text = selectedCategory
         } else {
-            titleLabel.text = "Расписание"
+            titleLabel.text = L10n.Navigation.schedule
             if selectedSchedule.isEmpty {
                 subtitleLabel.text = nil
             } else if selectedSchedule.count == 7 {
-                subtitleLabel.text = "Каждый день"
+                subtitleLabel.text = L10n.Message.everyDay
             } else {
                 let shortNames = selectedSchedule.sorted { $0.rawValue < $1.rawValue }.map { day in
                     day.short

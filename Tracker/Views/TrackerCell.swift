@@ -28,9 +28,9 @@ final class TrackerCell: UICollectionViewCell {
 
     private lazy var cardView: UIView = {
         let view = UIView()
-        view.backgroundColor = .ypBlack  // Adapting
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
+        // view.backgroundColor will be adapted during cell configuration
         return view
     }()
 
@@ -38,7 +38,7 @@ final class TrackerCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16)
         label.textAlignment = .center
-        label.text = "🌱"  // Adapting
+        // label.text will be adapted during cell configuration
         return label
     }()
 
@@ -56,7 +56,7 @@ final class TrackerCell: UICollectionViewCell {
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypWhite
         label.numberOfLines = 2
-        label.text = "Поливать растения"  // Adapting
+        // label.text will be adapted during cell configuration
         return label
     }()
 
@@ -64,7 +64,7 @@ final class TrackerCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlack
-        label.text = "0 дней"  // Adapting
+        // label.text will be adapted during cell configuration
         return label
     }()
 
@@ -72,8 +72,8 @@ final class TrackerCell: UICollectionViewCell {
         let button = UIButton(type: .custom)
         let image = UIImage(named: "button_complete")?.withRenderingMode(.alwaysTemplate)
         button.setImage(image, for: .normal)
-        button.tintColor = .ypBlack  // Adapting
         button.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
+        // button.tintColor will be adapted during cell configuration
         return button
     }()
 
@@ -195,6 +195,6 @@ final class TrackerCell: UICollectionViewCell {
         guard let tracker = tracker else { return }
 
         let completionCount = delegate?.getCompletionCount(for: tracker.id) ?? 0
-        countLabel.text = completionCount.localizedDayCount
+        countLabel.text = DaysFormatter.localizedDaysCount(completionCount)
     }
 }

@@ -45,7 +45,7 @@ final class TrackerCategorySelectionViewController: UIViewController {
 
     private lazy var placeholderLabel: UILabel = {
         let label = UILabel()
-        label.text = "Привычки и события можно\nобъединить по смыслу"
+        label.text = L10n.Message.categoriesDescription
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlack
         label.textAlignment = .center
@@ -55,7 +55,7 @@ final class TrackerCategorySelectionViewController: UIViewController {
 
     private lazy var addCategoryButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(L10n.Button.addCategory, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypBlack
@@ -115,7 +115,7 @@ final class TrackerCategorySelectionViewController: UIViewController {
     }
 
     private func setupNavigationBar() {
-        title = "Категория"
+        title = L10n.Navigation.category
         navigationItem.hidesBackButton = true
     }
 

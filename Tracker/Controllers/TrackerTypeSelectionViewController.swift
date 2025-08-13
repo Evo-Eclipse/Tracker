@@ -26,7 +26,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
 
     private lazy var habitButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Привычка", for: .normal)
+        button.setTitle(L10n.TrackerType.habit, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypBlack
@@ -37,7 +37,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
 
     private lazy var irregularEventButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Нерегулярное событие", for: .normal)
+        button.setTitle(L10n.TrackerType.irregularEvent, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypBlack
@@ -75,7 +75,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
     // MARK: - Private Methods
 
     private func setupNavigationBar() {
-        title = "Создание трекера"
+        title = L10n.Navigation.trackerCreation
         navigationItem.hidesBackButton = true
     }
 

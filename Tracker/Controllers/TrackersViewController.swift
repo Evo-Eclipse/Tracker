@@ -22,14 +22,13 @@ final class TrackersViewController: UIViewController {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
-        picker.locale = Locale(identifier: "ru_RU")
         picker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
         return picker
     }()
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Трекеры"
+        label.text = L10n.Navigation.trackers
         label.font = .systemFont(ofSize: 34, weight: .bold)
         label.textColor = .ypBlack
         return label
@@ -37,7 +36,7 @@ final class TrackersViewController: UIViewController {
 
     private lazy var searchBar: UISearchBar = {
         let bar = UISearchBar()
-        bar.placeholder = "Поиск"
+        bar.placeholder = L10n.Placeholder.search
         bar.searchBarStyle = .minimal
         bar.delegate = self
         return bar
@@ -61,7 +60,7 @@ final class TrackersViewController: UIViewController {
 
     private lazy var placeholderLabel: UILabel = {
         let label = UILabel()
-        label.text = "Что будем отслеживать?"
+        label.text = L10n.Message.emptyTrackers
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlack
         label.textAlignment = .center
