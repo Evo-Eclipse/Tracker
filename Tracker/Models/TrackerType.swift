@@ -14,9 +14,9 @@ enum TrackerType {
     var title: String {
         switch self {
         case .habit:
-            return L10n.TrackerType.newHabit
+            return L10n.newHabitTitle
         case .irregularEvent:
-            return L10n.TrackerType.newIrregularEvent
+            return L10n.newIrregularEventTitle
         }
     }
 

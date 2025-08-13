@@ -28,7 +28,7 @@ final class TrackersViewController: UIViewController {
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = L10n.Navigation.trackers
+        label.text = L10n.trackersTab
         label.font = .systemFont(ofSize: 34, weight: .bold)
         label.textColor = .ypBlack
         return label
@@ -36,7 +36,7 @@ final class TrackersViewController: UIViewController {
 
     private lazy var searchBar: UISearchBar = {
         let bar = UISearchBar()
-        bar.placeholder = L10n.Placeholder.search
+        bar.placeholder = L10n.searchPlaceholder
         bar.searchBarStyle = .minimal
         bar.delegate = self
         return bar
@@ -60,7 +60,7 @@ final class TrackersViewController: UIViewController {
 
     private lazy var placeholderLabel: UILabel = {
         let label = UILabel()
-        label.text = L10n.Message.emptyTrackers
+        label.text = L10n.emptyTrackersMessage
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlack
         label.textAlignment = .center

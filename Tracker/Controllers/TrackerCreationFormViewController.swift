@@ -21,7 +21,7 @@ final class TrackerCreationFormViewController: UIViewController {
 
     private lazy var titleTextField: UITextField = {
         let textField = SpacedTextField()
-        textField.placeholder = L10n.Placeholder.trackerName
+        textField.placeholder = L10n.trackerNamePlaceholder
         textField.font = .systemFont(ofSize: 17, weight: .regular)
         textField.backgroundColor = .ypBackground.withAlphaComponent(0.3)
         textField.layer.cornerRadius = 16
@@ -56,7 +56,7 @@ final class TrackerCreationFormViewController: UIViewController {
 
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle(L10n.Button.cancel, for: .normal)
+        button.setTitle(L10n.cancelButton, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypRed, for: .normal)
         button.backgroundColor = .clear
@@ -81,7 +81,7 @@ final class TrackerCreationFormViewController: UIViewController {
 
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
-        label.text = L10n.Navigation.emoji
+        label.text = L10n.emojiSectionTitle
         label.font = .systemFont(ofSize: 19, weight: .bold)
         return label
     }()
@@ -112,14 +112,14 @@ final class TrackerCreationFormViewController: UIViewController {
 
     private lazy var colorLabel: UILabel = {
         let label = UILabel()
-        label.text = L10n.Navigation.color
+        label.text = L10n.colorSectionTitle
         label.font = .systemFont(ofSize: 19, weight: .bold)
         return label
     }()
 
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle(L10n.Button.create, for: .normal)
+        button.setTitle(L10n.createButton, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypGray
@@ -180,7 +180,7 @@ final class TrackerCreationFormViewController: UIViewController {
         else { return }
 
         let trimmedTitle = title.trimmingCharacters(in: .whitespaces)
-        let category = selectedCategory ?? L10n.Message.defaultCategory
+        let category = selectedCategory ?? L10n.defaultCategoryName
         let schedule = trackerType.hasSchedule ? Array(selectedSchedule) : Weekday.allCases
 
         let newTracker = Tracker(
@@ -357,14 +357,14 @@ extension TrackerCreationFormViewController: UITableViewDataSource {
         containerView.addSubview(subtitleLabel)
 
         if indexPath.row == 0 {
-            titleLabel.text = L10n.Navigation.category
+            titleLabel.text = L10n.categoryTitle
             subtitleLabel.text = selectedCategory
         } else {
-            titleLabel.text = L10n.Navigation.schedule
+            titleLabel.text = L10n.scheduleTitle
             if selectedSchedule.isEmpty {
                 subtitleLabel.text = nil
             } else if selectedSchedule.count == 7 {
-                subtitleLabel.text = L10n.Message.everyDay
+                subtitleLabel.text = L10n.everyDaySchedule
             } else {
                 let shortNames = selectedSchedule.sorted { $0.rawValue < $1.rawValue }.map { day in
                     day.short
