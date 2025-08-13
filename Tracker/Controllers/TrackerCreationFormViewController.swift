@@ -141,7 +141,7 @@ final class TrackerCreationFormViewController: UIViewController {
     private var selectedEmoji: String?
     private var selectedColor: UIColor?
 
-    // MARK: - Init
+    // MARK: - Initializers
 
     init(trackerType: TrackerType) {
         self.trackerType = trackerType
@@ -160,9 +160,9 @@ final class TrackerCreationFormViewController: UIViewController {
 
         view.backgroundColor = .ypWhite
 
+        setupNavigationBar()
         setupViews()
         setupConstraints()
-        setupNavigationBar()
         setErrorHidden(true)
     }
 
@@ -479,7 +479,7 @@ extension TrackerCreationFormViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == emojiCollectionView {
             if let cell = collectionView.cellForItem(at: indexPath) as? EmojiCollectionViewCell {
-                cell.cardView.backgroundColor = .ypLightGray
+                cell.setSelected(true)
                 selectedEmoji = String.selectionEmojis[indexPath.item]
             }
         } else {
@@ -496,7 +496,7 @@ extension TrackerCreationFormViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if collectionView == emojiCollectionView {
             if let cell = collectionView.cellForItem(at: indexPath) as? EmojiCollectionViewCell {
-                cell.cardView.backgroundColor = .clear
+                cell.setSelected(false)
             }
         } else {
             if let cell = collectionView.cellForItem(at: indexPath) as? ColorCollectionViewCell {

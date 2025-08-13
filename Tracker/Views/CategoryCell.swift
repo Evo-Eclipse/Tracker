@@ -8,15 +8,20 @@
 import UIKit
 
 final class CategoryCell: UITableViewCell {
+
+    // MARK: - Public Properties
+
     static let identifier = "CategoryCell"
-    
+
+    // MARK: - Private Properties
+
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .regular)
         label.textColor = .ypBlack
         return label
     }()
-    
+
     private lazy var checkmarkImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "checkmark")
@@ -24,52 +29,30 @@ final class CategoryCell: UITableViewCell {
         imageView.isHidden = true
         return imageView
     }()
-    
+
     private lazy var separatorView: UIView = {
         let view = UIView()
         view.backgroundColor = .ypGray
         return view
     }()
-    
+
+    // MARK: - Initializers
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupCell()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func setupCell() {
-        backgroundColor = .ypBackground.withAlphaComponent(0.3)
-        selectionStyle = .none
-        
-        [titleLabel, checkmarkImageView, separatorView].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            contentView.addSubview($0)
-        }
-        
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: checkmarkImageView.leadingAnchor, constant: -16),
-            
-            checkmarkImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            checkmarkImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            checkmarkImageView.widthAnchor.constraint(equalToConstant: 24),
-            checkmarkImageView.heightAnchor.constraint(equalToConstant: 24),
-            
-            separatorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            separatorView.heightAnchor.constraint(equalToConstant: 0.5)
-        ])
-    }
-    
+
+    // MARK: - Public Methods
+
     func configure(title: String, isSelected: Bool, isFirstCell: Bool, isLastCell: Bool) {
         titleLabel.text = title
         checkmarkImageView.isHidden = !isSelected
-        
+
         if isFirstCell && isLastCell {
             layer.cornerRadius = 16
             layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -82,7 +65,35 @@ final class CategoryCell: UITableViewCell {
         } else {
             layer.cornerRadius = 0
         }
-        
+
         separatorView.isHidden = isLastCell
+    }
+
+    // MARK: - Private Methods
+
+    private func setupCell() {
+        backgroundColor = .ypBackground.withAlphaComponent(0.3)
+        selectionStyle = .none
+
+        [titleLabel, checkmarkImageView, separatorView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview($0)
+        }
+
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: checkmarkImageView.leadingAnchor, constant: -16),
+
+            checkmarkImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            checkmarkImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            checkmarkImageView.widthAnchor.constraint(equalToConstant: 24),
+            checkmarkImageView.heightAnchor.constraint(equalToConstant: 24),
+
+            separatorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            separatorView.heightAnchor.constraint(equalToConstant: 0.5)
+        ])
     }
 }

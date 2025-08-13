@@ -52,37 +52,12 @@ final class OnboardingViewController: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        dataSource = self
-        delegate = self
-
-        if let first = pages.first {
-            setViewControllers([first], direction: .forward, animated: true, completion: nil)
-        }
-
+        setupPageViewController()
         setupViews()
         setupConstraints()
     }
 
-    // MARK: - Private Methods
-
-    private func setupViews() {
-        [pageControl, actionButton].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
-        }
-    }
-
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            actionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            actionButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            actionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
-            actionButton.heightAnchor.constraint(equalToConstant: 60),
-
-            pageControl.bottomAnchor.constraint(equalTo: actionButton.topAnchor, constant: -24),
-            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-    }
+    // MARK: - Actions
 
     @objc private func actionButtonTapped() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -104,6 +79,36 @@ final class OnboardingViewController: UIPageViewController {
             animations: nil,
             completion: nil
         )
+    }
+
+    // MARK: - Private Methods
+
+    private func setupPageViewController() {
+        dataSource = self
+        delegate = self
+
+        if let first = pages.first {
+            setViewControllers([first], direction: .forward, animated: true, completion: nil)
+        }
+    }
+
+    private func setupViews() {
+        [pageControl, actionButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
+    }
+
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            actionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            actionButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            actionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+            actionButton.heightAnchor.constraint(equalToConstant: 60),
+
+            pageControl.bottomAnchor.constraint(equalTo: actionButton.topAnchor, constant: -24),
+            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
     }
 }
 
@@ -160,4 +165,3 @@ extension OnboardingViewController: UIPageViewControllerDelegate {
         }
     }
 }
-

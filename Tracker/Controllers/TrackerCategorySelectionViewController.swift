@@ -75,7 +75,7 @@ final class TrackerCategorySelectionViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Override Methods
+    // MARK: - Overrides Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()

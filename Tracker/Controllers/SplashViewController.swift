@@ -8,40 +8,40 @@
 import UIKit
 
 final class SplashViewController: UIViewController {
-    
+
     // MARK: - Private Properties
-    
+
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "icon_splash")
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
-    
+
     // MARK: - Overrides Methods
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.backgroundColor = .ypBlue
-        
+
         setupViews()
         setupConstraints()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         switchToTabBarViewController()
     }
-    
+
     // MARK: - Private Methods
-    
+
     private func setupViews() {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
     }
-    
+
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -55,10 +55,10 @@ final class SplashViewController: UIViewController {
             assertionFailure("Invalid configuration, no main window found")
             return
         }
-        
+
         let tabBarViewController = TabBarViewController()
         window.rootViewController = tabBarViewController
-        
+
         UIView.transition(
             with: window,
             duration: 0.3,
