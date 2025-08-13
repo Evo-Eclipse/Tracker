@@ -13,12 +13,12 @@ final class OnboardingViewController: UIPageViewController {
 
     private lazy var pages: [UIViewController] = {
         let firstPage = OnboardingPageViewController(
-            imageName: "image_onboarding_first",
+            image: UIImage.imageOnboardingFirst,
             labelText: L10n.onboardingFirstPage
         )
 
         let lastPage = OnboardingPageViewController(
-            imageName: "image_onboarding_last",
+            image: UIImage.imageOnboardingLast,
             labelText: L10n.onboardingSecondPage
         )
 

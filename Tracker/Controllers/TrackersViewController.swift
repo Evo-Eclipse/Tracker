@@ -13,7 +13,7 @@ final class TrackersViewController: UIViewController {
 
     private lazy var addButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "button_add"), for: .normal)
+        button.setImage(UIImage.buttonAdd, for: .normal)
         button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -53,7 +53,7 @@ final class TrackersViewController: UIViewController {
 
     private lazy var placeholderImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_dizzy")
+        view.image = UIImage.iconDizzy
         view.contentMode = .scaleAspectFit
         return view
     }()

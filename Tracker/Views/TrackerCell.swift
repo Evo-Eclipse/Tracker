@@ -70,7 +70,7 @@ final class TrackerCell: UICollectionViewCell {
 
     private lazy var completeButton: UIButton = {
         let button = UIButton(type: .custom)
-        let image = UIImage(named: "button_complete")?.withRenderingMode(.alwaysTemplate)
+        let image = UIImage.buttonCompleteInactive.withRenderingMode(.alwaysTemplate)
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
         // button.tintColor will be adapted during cell configuration
@@ -179,8 +179,8 @@ final class TrackerCell: UICollectionViewCell {
 
         isCompleted = delegate?.isTrackerCompleted(tracker.id, on: currentDate) ?? false
 
-        let imageName = isCompleted ? "button_completed" : "button_complete"
-        let image = UIImage(named: imageName)?.withRenderingMode(.alwaysTemplate)
+        let image = (isCompleted ? UIImage.buttonCompleteActive : UIImage.buttonCompleteInactive).withRenderingMode(.alwaysTemplate)
+        
         completeButton.setImage(image, for: .normal)
 
         completeButton.alpha = isCompleted ? 0.3 : 1.0

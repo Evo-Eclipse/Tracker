@@ -38,7 +38,7 @@ final class TrackerCategorySelectionViewController: UIViewController {
 
     private lazy var placeholderImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "icon_dizzy")
+        view.image = UIImage.iconDizzy
         view.contentMode = .scaleAspectFit
         return view
     }()
