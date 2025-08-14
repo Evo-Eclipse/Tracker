@@ -12,6 +12,7 @@ final class UserStore {
 
     private let onboardingCompletedKey = "IsOnboardingCompleted"
     private let statisticsKey = "StatisticsData"
+    private let currentFilterKey = "CurrentFilter"
 
     private init() {}
 
@@ -30,5 +31,15 @@ final class UserStore {
 
     func getCompletedTrackers() -> Int {
         return UserDefaults.standard.integer(forKey: statisticsKey)
+    }
+
+    var currentFilter: TrackerFilter {
+        get {
+            let rawValue = UserDefaults.standard.integer(forKey: currentFilterKey)
+            return TrackerFilter(rawValue: rawValue) ?? .all
+        }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: currentFilterKey)
+        }
     }
 }

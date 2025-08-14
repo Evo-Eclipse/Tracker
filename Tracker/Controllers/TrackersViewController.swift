@@ -104,7 +104,11 @@ final class TrackersViewController: UIViewController {
 
     private var currentDate: Date = Date()
     private var visibleCategories: [TrackerCategory] = []
-    private var currentFilter: TrackerFilter = .all
+
+    private var currentFilter: TrackerFilter {
+        get { UserStore.shared.currentFilter }
+        set { UserStore.shared.currentFilter = newValue }
+    }
 
     // MARK: - Overrides Methods
 
@@ -219,9 +223,12 @@ final class TrackersViewController: UIViewController {
     }
 
     private func updatePlaceholderVisibility() {
-        let hasTrackers = visibleCategories.contains { !$0.trackers.isEmpty }
+        let hasTrackersOnDate = trackerStore.hasTrackersOnDate(currentDate, searchText: searchController.searchBar.text)
 
-        guard !hasTrackers else {
+        filtersButton.isHidden = !hasTrackersOnDate
+
+        let hasFilteredTrackers = visibleCategories.contains { !$0.trackers.isEmpty }
+        guard !hasFilteredTrackers else {
             placeholderStackView.isHidden = true
             return
         }
@@ -454,7 +461,14 @@ extension TrackersViewController: TrackerStoreDelegate {
 
 extension TrackersViewController: FiltersViewControllerDelegate {
     func filtersViewController(_ vc: FiltersViewController, didSelect filter: TrackerFilter) {
-        currentFilter = filter
+        if filter == .today {
+            currentDate = Date()
+            datePicker.date = currentDate
+            currentFilter = .all
+        } else {
+            currentFilter = filter
+        }
+
         filterVisibleTrackers()
     }
 }

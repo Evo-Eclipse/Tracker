@@ -92,13 +92,13 @@ extension FiltersViewController: UITableViewDataSource {
 
         let filter = TrackerFilter.allCases[indexPath.row]
         let title = title(for: filter)
-        let isSelected = (filter == selectedFilter)
+        let showCheckmark = (filter == selectedFilter) && (filter == .completed || filter == .incomplete)
         let isFirstCell = indexPath.row == 0
         let isLastCell = indexPath.row == TrackerFilter.allCases.count - 1
 
         cell.configure(
             title: title,
-            isSelected: isSelected,
+            isSelected: showCheckmark,
             isFirstCell: isFirstCell,
             isLastCell: isLastCell
         )
