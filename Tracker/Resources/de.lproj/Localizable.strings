@@ -11,6 +11,7 @@
 "doneButton" = "Fertig";
 "addCategoryButton" = "Kategorie hinzufügen";
 "onboardingButton" = "Das sind die Technologien!";
+"filtersButton" = "Filter";
 
 "habitType" = "Gewohnheit";
 "irregularEventType" = "Unregelmäßiges Ereignis";
@@ -25,6 +26,12 @@
 "newCategoryTitle" = "Neue Kategorie";
 "emojiSectionTitle" = "Emoji";
 "colorSectionTitle" = "Farbe";
+"filtersTitle" = "Filter";
+
+"allTrackersFilter" = "Alle Tracker";
+"todayTrackersFilter" = "Tracker für heute";
+"completedTrackersFilter" = "Abgeschlossen";
+"incompleteTrackersFilter" = "Nicht abgeschlossen";
 
 "trackerNamePlaceholder" = "Tracker-Namen eingeben";
 "categoryNamePlaceholder" = "Kategorie-Namen eingeben";

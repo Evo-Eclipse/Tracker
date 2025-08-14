@@ -11,6 +11,7 @@
 "doneButton" = "Готово";
 "addCategoryButton" = "Добавить категорию";
 "onboardingButton" = "Вот это технологии!";
+"filtersButton" = "Фильтры";
 
 "habitType" = "Привычка";
 "irregularEventType" = "Нерегулярное событие";
@@ -25,6 +26,12 @@
 "newCategoryTitle" = "Новая категория";
 "emojiSectionTitle" = "Emoji";
 "colorSectionTitle" = "Цвет";
+"filtersTitle" = "Фильтры";
+
+"allTrackersFilter" = "Все трекеры";
+"todayTrackersFilter" = "Трекеры на сегодня";
+"completedTrackersFilter" = "Завершенные";
+"incompleteTrackersFilter" = "Не завершенные";
 
 "trackerNamePlaceholder" = "Введите название трекера";
 "categoryNamePlaceholder" = "Введите название категории";

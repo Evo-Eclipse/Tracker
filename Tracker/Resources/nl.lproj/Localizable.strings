@@ -11,6 +11,7 @@
 "doneButton" = "Klaar";
 "addCategoryButton" = "Categorie toevoegen";
 "onboardingButton" = "Dit zijn de technologieën!";
+"filtersButton" = "Filters";
 
 "habitType" = "Gewoonte";
 "irregularEventType" = "Onregelmatige gebeurtenis";
@@ -25,6 +26,12 @@
 "newCategoryTitle" = "Nieuwe categorie";
 "emojiSectionTitle" = "Emoji";
 "colorSectionTitle" = "Kleur";
+"filtersTitle" = "Filters";
+
+"allTrackersFilter" = "Alle trackers";
+"todayTrackersFilter" = "Trackers voor vandaag";
+"completedTrackersFilter" = "Voltooid";
+"incompleteTrackersFilter" = "Niet voltooid";
 
 "trackerNamePlaceholder" = "Voer tracker naam in";
 "categoryNamePlaceholder" = "Voer categorie naam in";

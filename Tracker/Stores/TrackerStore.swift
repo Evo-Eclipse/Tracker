@@ -100,7 +100,7 @@ final class TrackerStore: NSObject {
     }
 
     // Build a filtered snapshot grouped by category title for UI consumption
-    func snapshotFiltered(date: Date, searchText: String?) -> [TrackerCategory] {
+    func snapshotFiltered(date: Date, searchText: String?, filter: TrackerFilter? = nil, recordStore: TrackerRecordStore? = nil) -> [TrackerCategory] {
         let calendar = Calendar.current
         let weekdayIndex = calendar.component(.weekday, from: date)
         let weekday = Weekday.fromSystemIndex(weekdayIndex)
@@ -120,9 +120,26 @@ final class TrackerStore: NSObject {
                 let t = tracker(at: IndexPath(item: row, section: section))
                 // Filter by weekday schedule (empty schedule means every day)
                 let matchesDay = t.schedule.isEmpty || t.schedule.contains(weekday)
-                if !matchesDay { continue }
+                // For "All trackers" we ignore schedule restriction
+                if !(filter == .all) {
+                    if !matchesDay { continue }
+                }
                 // Filter by search query
                 if hasQuery, t.title.localizedStandardRange(of: query) == nil { continue }
+                // Filter by completion state if requested
+                if let filter = filter, let rs = recordStore {
+                    switch filter {
+                    case .all:
+                        break
+                    case .today:
+                        // Already constrained by date via weekday; include all
+                        break
+                    case .completed:
+                        if !rs.isCompleted(trackerId: t.id, on: date) { continue }
+                    case .incomplete:
+                        if rs.isCompleted(trackerId: t.id, on: date) { continue }
+                    }
+                }
                 trackers.append(t)
             }
             if !trackers.isEmpty {

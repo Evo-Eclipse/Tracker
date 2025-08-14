@@ -15,6 +15,7 @@ enum L10n {
     static let doneButton = NSLocalizedString("doneButton", comment: "Done button")
     static let addCategoryButton = NSLocalizedString("addCategoryButton", comment: "Add category button")
     static let onboardingButton = NSLocalizedString("onboardingButton", comment: "Onboarding finish button")
+    static let filtersButton = NSLocalizedString("filtersButton", comment: "Filters button")
 
     // MARK: Tracker Types
 
@@ -33,6 +34,14 @@ enum L10n {
     static let newCategoryTitle = NSLocalizedString("newCategoryTitle", comment: "New category title")
     static let emojiSectionTitle = NSLocalizedString("emojiSectionTitle", comment: "Emoji section title")
     static let colorSectionTitle = NSLocalizedString("colorSectionTitle", comment: "Color section title")
+    static let filtersTitle = NSLocalizedString("filtersTitle", comment: "Filters screen title")
+
+    // MARK: Filter Options
+
+    static let allTrackersFilter = NSLocalizedString("allTrackersFilter", comment: "All trackers filter option")
+    static let todayTrackersFilter = NSLocalizedString("todayTrackersFilter", comment: "Today trackers filter option")
+    static let completedTrackersFilter = NSLocalizedString("completedTrackersFilter", comment: "Completed trackers filter option")
+    static let incompleteTrackersFilter = NSLocalizedString("incompleteTrackersFilter", comment: "Incomplete trackers filter option")
 
     // MARK: Placeholders
 

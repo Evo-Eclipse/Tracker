@@ -34,6 +34,20 @@ final class TrackersViewController: UIViewController {
         return label
     }()
 
+    private lazy var filtersButton: UIButton = {
+    let button = UIButton(type: .system)
+    var config = UIButton.Configuration.filled()
+    config.title = L10n.filtersButton
+    config.baseBackgroundColor = .ypBlue
+    config.baseForegroundColor = .ypWhite
+    config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 20, bottom: 14, trailing: 20)
+    config.background.cornerRadius = 16
+    button.configuration = config
+    button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
+        button.addTarget(self, action: #selector(filtersButtonTapped), for: .touchUpInside)
+        return button
+    }()
+
     private lazy var searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: nil)
         controller.searchResultsUpdater = self
@@ -90,6 +104,7 @@ final class TrackersViewController: UIViewController {
 
     private var currentDate: Date = Date()
     private var visibleCategories: [TrackerCategory] = []
+    private var currentFilter: TrackerFilter = .all
 
     // MARK: - Overrides Methods
 
@@ -123,6 +138,13 @@ final class TrackersViewController: UIViewController {
         filterVisibleTrackers()
     }
 
+    @objc private func filtersButtonTapped() {
+        let filtersViewController = FiltersViewController(selected: currentFilter)
+        filtersViewController.delegate = self
+        let navigationController = UINavigationController(rootViewController: filtersViewController)
+        present(navigationController, animated: true)
+    }
+
     // MARK: - Private Methods
 
     private func setupNavigationBar() {
@@ -141,7 +163,7 @@ final class TrackersViewController: UIViewController {
     }
 
     private func setupViews() {
-        [placeholderStackView, collectionView].forEach {
+    [placeholderStackView, collectionView, filtersButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -160,7 +182,11 @@ final class TrackersViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+
+            filtersButton.heightAnchor.constraint(equalToConstant: 50),
+            filtersButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filtersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
     }
 
@@ -180,15 +206,15 @@ final class TrackersViewController: UIViewController {
 
     private func updatePlaceholderVisibility() {
         let hasTrackers = visibleCategories.contains { !$0.trackers.isEmpty }
-        
+
         guard !hasTrackers else {
             placeholderStackView.isHidden = true
             return
         }
-        
+
         let searchText = (searchController.searchBar.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         let isSearching = !searchText.isEmpty
-        
+
         configurePlaceholder(isSearching: isSearching)
         placeholderStackView.isHidden = false
     }
@@ -204,7 +230,12 @@ final class TrackersViewController: UIViewController {
     }
 
     private func filterVisibleTrackers() {
-        visibleCategories = trackerStore.snapshotFiltered(date: currentDate, searchText: searchController.searchBar.text)
+        visibleCategories = trackerStore.snapshotFiltered(
+            date: currentDate,
+            searchText: searchController.searchBar.text,
+            filter: currentFilter,
+            recordStore: recordStore
+        )
         updateUI()
     }
 
@@ -356,6 +387,15 @@ extension TrackersViewController: TrackerCellDelegate {
 
 extension TrackersViewController: TrackerStoreDelegate {
     func trackerStoreDidChange(sectionChanges: [StoreSectionChange], objectChanges: [StoreObjectChange]) {
+        filterVisibleTrackers()
+    }
+}
+
+// MARK: - FiltersViewControllerDelegate
+
+extension TrackersViewController: FiltersViewControllerDelegate {
+    func filtersViewController(_ vc: FiltersViewController, didSelect filter: TrackerFilter) {
+        currentFilter = filter
         filterVisibleTrackers()
     }
 }
