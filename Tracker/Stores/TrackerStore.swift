@@ -48,7 +48,7 @@ final class TrackerStore: NSObject {
         super.init()
         try? fetchedResultsController.performFetch()
     }
-    
+
     // MARK: - Public Methods
 
     func createTracker(_ tracker: Tracker, in categoryTitle: String) {
@@ -110,7 +110,7 @@ final class TrackerStore: NSObject {
         let hasQuery = !query.isEmpty
 
         var result: [TrackerCategory] = []
-        
+
         let sectionsCount = numberOfSections()
         for section in 0..<sectionsCount {
             let title = titleForSection(section)
@@ -122,7 +122,7 @@ final class TrackerStore: NSObject {
                 let matchesDay = t.schedule.isEmpty || t.schedule.contains(weekday)
                 if !matchesDay { continue }
                 // Filter by search query
-                if hasQuery, t.title.range(of: query, options: [.caseInsensitive, .diacriticInsensitive]) == nil { continue }
+                if hasQuery, t.title.localizedStandardRange(of: query) == nil { continue }
                 trackers.append(t)
             }
             if !trackers.isEmpty {
