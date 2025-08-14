@@ -298,6 +298,35 @@ final class TrackersViewController: UIViewController {
 
         return section
     }
+
+    private func presentEditTracker(_ tracker: Tracker) {
+        let editViewController = TrackerEditViewController(tracker: tracker)
+        editViewController.delegate = self
+        let navigationController = UINavigationController(rootViewController: editViewController)
+        present(navigationController, animated: true)
+    }
+
+    private func confirmDeleteTracker(_ tracker: Tracker) {
+        let alertController = UIAlertController(
+            title: L10n.deleteConfirmationTitle,
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+
+        let deleteAction = UIAlertAction(title: L10n.deleteAction, style: .destructive) { [weak self] _ in
+            self?.deleteTracker(tracker)
+        }
+        alertController.addAction(deleteAction)
+
+        let cancelAction = UIAlertAction(title: L10n.cancelButton, style: .cancel)
+        alertController.addAction(cancelAction)
+
+        present(alertController, animated: true)
+    }
+
+    private func deleteTracker(_ tracker: Tracker) {
+        trackerStore.deleteTracker(trackerId: tracker.id)
+    }
 }
 
 // MARK: - UISearchResultsUpdating
@@ -356,9 +385,7 @@ extension TrackersViewController: UICollectionViewDelegate {
         let tracker = visibleCategories[indexPath.section].trackers[indexPath.item]
         print("Selected tracker: \(tracker.title)")
     }
-}
-
-// MARK: - NewTrackerViewControllerDelegate
+}// MARK: - NewTrackerViewControllerDelegate
 
 extension TrackersViewController: TrackerCreationFormViewControllerDelegate {
     func didCreateTracker(_ tracker: Tracker, in category: String) {
@@ -381,6 +408,14 @@ extension TrackersViewController: TrackerCellDelegate {
     func isTrackerCompleted(_ trackerId: UUID, on date: Date) -> Bool {
         return recordStore.isCompleted(trackerId: trackerId, on: date)
     }
+
+    func didRequestEditTracker(_ tracker: Tracker) {
+        presentEditTracker(tracker)
+    }
+
+    func didRequestDeleteTracker(_ tracker: Tracker) {
+        confirmDeleteTracker(tracker)
+    }
 }
 
 // MARK: - TrackerStoreDelegate
@@ -397,5 +432,13 @@ extension TrackersViewController: FiltersViewControllerDelegate {
     func filtersViewController(_ vc: FiltersViewController, didSelect filter: TrackerFilter) {
         currentFilter = filter
         filterVisibleTrackers()
+    }
+}
+
+// MARK: - TrackerEditViewControllerDelegate
+
+extension TrackersViewController: TrackerEditViewControllerDelegate {
+    func didUpdateTracker(_ tracker: Tracker) {
+        trackerStore.updateTracker(tracker)
     }
 }

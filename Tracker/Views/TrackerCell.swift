@@ -11,6 +11,8 @@ protocol TrackerCellDelegate: AnyObject {
     func didToggleTracker(_ tracker: Tracker, on date: Date)
     func getCompletionCount(for trackerId: UUID) -> Int
     func isTrackerCompleted(_ trackerId: UUID, on date: Date) -> Bool
+    func didRequestEditTracker(_ tracker: Tracker)
+    func didRequestDeleteTracker(_ tracker: Tracker)
 }
 
 final class TrackerCell: UICollectionViewCell {
@@ -84,6 +86,7 @@ final class TrackerCell: UICollectionViewCell {
 
         setupViews()
         setupConstraints()
+        setupGestures()
     }
 
     required init?(coder: NSCoder) {
@@ -174,13 +177,18 @@ final class TrackerCell: UICollectionViewCell {
         ])
     }
 
+    private func setupGestures() {
+        let contextMenuInteraction = UIContextMenuInteraction(delegate: self)
+        cardView.addInteraction(contextMenuInteraction)
+    }
+
     private func updateCompletionState() {
         guard let tracker = tracker else { return }
 
         isCompleted = delegate?.isTrackerCompleted(tracker.id, on: currentDate) ?? false
 
         let image = (isCompleted ? UIImage.buttonCompleteActive : UIImage.buttonCompleteInactive).withRenderingMode(.alwaysTemplate)
-        
+
         completeButton.setImage(image, for: .normal)
 
         completeButton.alpha = isCompleted ? 0.3 : 1.0
@@ -196,5 +204,25 @@ final class TrackerCell: UICollectionViewCell {
 
         let completionCount = delegate?.getCompletionCount(for: tracker.id) ?? 0
         countLabel.text = DaysFormatter.localizedDaysCount(completionCount)
+    }
+}
+
+// MARK: - UIContextMenuInteractionDelegate
+
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        guard let tracker = tracker else { return nil }
+
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let editAction = UIAction(title: L10n.editAction, image: nil) { [weak self] _ in
+                self?.delegate?.didRequestEditTracker(tracker)
+            }
+
+            let deleteAction = UIAction(title: L10n.deleteAction, image: nil, attributes: .destructive) { [weak self] _ in
+                self?.delegate?.didRequestDeleteTracker(tracker)
+            }
+
+            return UIMenu(title: "", children: [editAction, deleteAction])
+        }
     }
 }

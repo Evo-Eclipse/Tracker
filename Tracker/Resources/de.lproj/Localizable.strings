@@ -8,6 +8,7 @@
 
 "cancelButton" = "Abbrechen";
 "createButton" = "Erstellen";
+"saveButton" = "Speichern";
 "doneButton" = "Fertig";
 "addCategoryButton" = "Kategorie hinzufügen";
 "onboardingButton" = "Das sind die Technologien!";
@@ -62,5 +63,11 @@
 "characterLimitTemplate" = "%d Zeichen Limit";
 "everyDaySchedule" = "Jeden Tag";
 "defaultCategoryName" = "Standard";
+
+"pinAction" = "Anheften";
+"editAction" = "Bearbeiten";
+"deleteAction" = "Löschen";
+"deleteConfirmationTitle" = "Sind Sie sicher, dass Sie den Tracker löschen möchten?";
+"editHabitTitle" = "Bearbeitung der Gewohnheit";
 
 "daysCount" = "Tage";

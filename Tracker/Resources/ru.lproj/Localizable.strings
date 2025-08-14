@@ -8,6 +8,7 @@
 
 "cancelButton" = "Отменить";
 "createButton" = "Создать";
+"saveButton" = "Сохранить";
 "doneButton" = "Готово";
 "addCategoryButton" = "Добавить категорию";
 "onboardingButton" = "Вот это технологии!";
@@ -62,5 +63,11 @@
 "characterLimitTemplate" = "Ограничение %d символов";
 "everyDaySchedule" = "Каждый день";
 "defaultCategoryName" = "По умолчанию";
+
+"pinAction" = "Закрепить";
+"editAction" = "Редактировать";
+"deleteAction" = "Удалить";
+"deleteConfirmationTitle" = "Уверены что хотите удалить трекер?";
+"editHabitTitle" = "Редактирование привычки";
 
 "daysCount" = "дней";

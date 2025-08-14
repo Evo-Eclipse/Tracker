@@ -8,6 +8,7 @@
 
 "cancelButton" = "Annuleren";
 "createButton" = "Maken";
+"saveButton" = "Opslaan";
 "doneButton" = "Klaar";
 "addCategoryButton" = "Categorie toevoegen";
 "onboardingButton" = "Dit zijn de technologieën!";
@@ -62,5 +63,11 @@
 "characterLimitTemplate" = "%d karakters limiet";
 "everyDaySchedule" = "Elke dag";
 "defaultCategoryName" = "Standaard";
+
+"pinAction" = "Vastzetten";
+"editAction" = "Bewerken";
+"deleteAction" = "Verwijderen";
+"deleteConfirmationTitle" = "Weet u zeker dat u de tracker wilt verwijderen?";
+"editHabitTitle" = "Gewoonte bewerken";
 
 "daysCount" = "dagen";

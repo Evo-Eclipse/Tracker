@@ -12,6 +12,7 @@ enum L10n {
 
     static let cancelButton = NSLocalizedString("cancelButton", comment: "Cancel button")
     static let createButton = NSLocalizedString("createButton", comment: "Create button")
+    static let saveButton = NSLocalizedString("saveButton", comment: "Save button")
     static let doneButton = NSLocalizedString("doneButton", comment: "Done button")
     static let addCategoryButton = NSLocalizedString("addCategoryButton", comment: "Add category button")
     static let onboardingButton = NSLocalizedString("onboardingButton", comment: "Onboarding finish button")
@@ -79,4 +80,12 @@ enum L10n {
     static let characterLimitMessage = NSLocalizedString("characterLimitMessage", comment: "Character limit warning")
     static let everyDaySchedule = NSLocalizedString("everyDaySchedule", comment: "Every day schedule option")
     static let defaultCategoryName = NSLocalizedString("defaultCategoryName", comment: "Default category name")
+
+    // MARK: Context menu
+
+    static let pinAction = NSLocalizedString("pinAction", comment: "")
+    static let editAction = NSLocalizedString("editAction", comment: "")
+    static let deleteAction = NSLocalizedString("deleteAction", comment: "")
+    static let deleteConfirmationTitle = NSLocalizedString("deleteConfirmationTitle", comment: "")
+    static let editHabitTitle = NSLocalizedString("editHabitTitle", comment: "");
 }
