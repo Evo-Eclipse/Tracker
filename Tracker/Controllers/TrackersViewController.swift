@@ -34,12 +34,13 @@ final class TrackersViewController: UIViewController {
         return label
     }()
 
-    private lazy var searchBar: UISearchBar = {
-        let bar = UISearchBar()
-        bar.placeholder = L10n.searchPlaceholder
-        bar.searchBarStyle = .minimal
-        bar.delegate = self
-        return bar
+    private lazy var searchController: UISearchController = {
+        let controller = UISearchController(searchResultsController: nil)
+        controller.searchResultsUpdater = self
+        controller.obscuresBackgroundDuringPresentation = false
+        controller.hidesNavigationBarDuringPresentation = false
+        controller.searchBar.placeholder = L10n.searchPlaceholder
+        return controller
     }()
 
     private lazy var placeholderStackView: UIStackView = {
@@ -125,15 +126,22 @@ final class TrackersViewController: UIViewController {
     // MARK: - Private Methods
 
     private func setupNavigationBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        title = L10n.trackersTab
+
         let addBarButtonItem = UIBarButtonItem(customView: addButton)
         navigationItem.leftBarButtonItem = addBarButtonItem
 
         let datePickerBarButtonItem = UIBarButtonItem(customView: datePicker)
         navigationItem.rightBarButtonItem = datePickerBarButtonItem
+
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
     }
 
     private func setupViews() {
-        [titleLabel, searchBar, placeholderStackView, collectionView].forEach {
+        [placeholderStackView, collectionView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -146,18 +154,10 @@ final class TrackersViewController: UIViewController {
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-
-            searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            searchBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-
             placeholderStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             placeholderStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
 
-            collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 8),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -184,7 +184,7 @@ final class TrackersViewController: UIViewController {
     }
 
     private func filterVisibleTrackers() {
-        visibleCategories = trackerStore.snapshotFiltered(date: currentDate, searchText: searchBar.text)
+        visibleCategories = trackerStore.snapshotFiltered(date: currentDate, searchText: searchController.searchBar.text)
         updateUI()
     }
 
@@ -249,13 +249,17 @@ final class TrackersViewController: UIViewController {
     }
 }
 
+// MARK: - UISearchResultsUpdating
+
+extension TrackersViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        filterVisibleTrackers()
+    }
+}
+
 // MARK: - UISearchBarDelegate
 
 extension TrackersViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filterVisibleTrackers()
-    }
-
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
