@@ -125,11 +125,23 @@ final class TrackersViewController: UIViewController {
         setupViews()
         setupConstraints()
         filterVisibleTrackers()
+
+        // Отправляем событие открытия экрана
+        AnalyticsService.shared.reportScreenOpen(screen: .main)
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        // Отправляем событие закрытия экрана
+        AnalyticsService.shared.reportScreenClose(screen: .main)
     }
 
     // MARK: - Actions
 
     @objc private func addButtonTapped() {
+        // Отправляем событие клика на кнопку добавления трека
+        AnalyticsService.shared.reportClick(screen: .main, item: .addTrack)
         presentModalViewController()
     }
 
@@ -139,6 +151,8 @@ final class TrackersViewController: UIViewController {
     }
 
     @objc private func filtersButtonTapped() {
+        // Отправляем событие клика на кнопку фильтра
+        AnalyticsService.shared.reportClick(screen: .main, item: .filter)
         let filtersViewController = FiltersViewController(selected: currentFilter)
         filtersViewController.delegate = self
         let navigationController = UINavigationController(rootViewController: filtersViewController)
@@ -383,6 +397,10 @@ extension TrackersViewController: UICollectionViewDataSource {
 extension TrackersViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let tracker = visibleCategories[indexPath.section].trackers[indexPath.item]
+
+        // Отправляем событие тапа на трек
+        AnalyticsService.shared.reportClick(screen: .main, item: .track)
+
         print("Selected tracker: \(tracker.title)")
     }
 }// MARK: - NewTrackerViewControllerDelegate
@@ -397,6 +415,8 @@ extension TrackersViewController: TrackerCreationFormViewControllerDelegate {
 
 extension TrackersViewController: TrackerCellDelegate {
     func didToggleTracker(_ tracker: Tracker, on date: Date) {
+        // Отправляем событие клика на кнопку выполнения трека
+        AnalyticsService.shared.reportClick(screen: .main, item: .track)
         recordStore.toggle(trackerId: tracker.id, on: date)
         collectionView.reloadData()
     }
@@ -410,10 +430,14 @@ extension TrackersViewController: TrackerCellDelegate {
     }
 
     func didRequestEditTracker(_ tracker: Tracker) {
+        // Отправляем событие клика на редактирование
+        AnalyticsService.shared.reportClick(screen: .main, item: .edit)
         presentEditTracker(tracker)
     }
 
     func didRequestDeleteTracker(_ tracker: Tracker) {
+        // Отправляем событие клика на удаление
+        AnalyticsService.shared.reportClick(screen: .main, item: .delete)
         confirmDeleteTracker(tracker)
     }
 }
