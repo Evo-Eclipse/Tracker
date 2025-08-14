@@ -46,7 +46,7 @@ final class TrackerCell: UICollectionViewCell {
 
     private lazy var emojiBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.ypWhite.withAlphaComponent(0.3)
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.3)
         view.layer.cornerRadius = 12
         view.layer.masksToBounds = true
         return view

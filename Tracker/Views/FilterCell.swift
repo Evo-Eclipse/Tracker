@@ -15,13 +15,6 @@ final class FilterCell: UITableViewCell {
 
     // MARK: - Private Properties
 
-    private lazy var bgView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.ypGray.withAlphaComponent(0.12)
-        view.layer.masksToBounds = true
-        return view
-    }()
-
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .regular)
@@ -29,21 +22,25 @@ final class FilterCell: UITableViewCell {
         return label
     }()
 
-    private lazy var checkmark: UIImageView = {
-        let imageView = UIImageView(image: UIImage(systemName: "checkmark"))
+    private lazy var checkmarkImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "checkmark")
         imageView.tintColor = .ypBlue
+        imageView.isHidden = true
         return imageView
     }()
 
-    private let topSeparator = UIView()
-    private let bottomSeparator = UIView()
+    private lazy var separatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .ypGray
+        return view
+    }()
 
     // MARK: - Initializers
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupViews()
-        setupConstraints()
+        setupCell()
     }
 
     required init?(coder: NSCoder) {
@@ -52,65 +49,51 @@ final class FilterCell: UITableViewCell {
 
     // MARK: - Public Methods
 
-    func configure(title: String, isFirst: Bool, isLast: Bool, isChecked: Bool) {
+    func configure(title: String, isSelected: Bool, isFirstCell: Bool, isLastCell: Bool) {
         titleLabel.text = title
-        checkmark.isHidden = !isChecked
+        checkmarkImageView.isHidden = !isSelected
 
-        // Rounded corners per design: 16 on first top, 16 on last bottom
-        var maskedCorners: CACornerMask = []
-        if isFirst { maskedCorners.formUnion([.layerMinXMinYCorner, .layerMaxXMinYCorner]) }
-        if isLast { maskedCorners.formUnion([.layerMinXMaxYCorner, .layerMaxXMaxYCorner]) }
-        bgView.layer.cornerRadius = (isFirst || isLast) ? 16 : 0
-        bgView.layer.maskedCorners = maskedCorners
+        if isFirstCell && isLastCell {
+            layer.cornerRadius = 16
+            layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        } else if isFirstCell {
+            layer.cornerRadius = 16
+            layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        } else if isLastCell {
+            layer.cornerRadius = 16
+            layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        } else {
+            layer.cornerRadius = 0
+        }
 
-        // Custom separators: hide top on first, hide bottom on last
-        topSeparator.isHidden = isFirst
-        bottomSeparator.isHidden = isLast
+        separatorView.isHidden = isLastCell
     }
 
     // MARK: - Private Methods
 
-    private func setupViews() {
-        backgroundColor = .clear
-        contentView.backgroundColor = .clear
+    private func setupCell() {
+        backgroundColor = .ypBackground.withAlphaComponent(0.3)
         selectionStyle = .none
 
-        [bgView, topSeparator, bottomSeparator].forEach {
+        [titleLabel, checkmarkImageView, separatorView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)
         }
 
-        [titleLabel, checkmark].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            bgView.addSubview($0)
-        }
-
-        topSeparator.backgroundColor = UIColor.ypGray.withAlphaComponent(0.3)
-        bottomSeparator.backgroundColor = UIColor.ypGray.withAlphaComponent(0.3)
-    }
-
-    private func setupConstraints() {
         NSLayoutConstraint.activate([
-            bgView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            bgView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            bgView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            bgView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: checkmarkImageView.leadingAnchor, constant: -16),
 
-            titleLabel.leadingAnchor.constraint(equalTo: bgView.leadingAnchor, constant: 16),
-            titleLabel.centerYAnchor.constraint(equalTo: bgView.centerYAnchor),
+            checkmarkImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            checkmarkImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            checkmarkImageView.widthAnchor.constraint(equalToConstant: 24),
+            checkmarkImageView.heightAnchor.constraint(equalToConstant: 24),
 
-            checkmark.trailingAnchor.constraint(equalTo: bgView.trailingAnchor, constant: -16),
-            checkmark.centerYAnchor.constraint(equalTo: bgView.centerYAnchor),
-
-            topSeparator.heightAnchor.constraint(equalToConstant: 0.5),
-            topSeparator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            topSeparator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            topSeparator.topAnchor.constraint(equalTo: contentView.topAnchor),
-
-            bottomSeparator.heightAnchor.constraint(equalToConstant: 0.5),
-            bottomSeparator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            bottomSeparator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            bottomSeparator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            separatorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            separatorView.heightAnchor.constraint(equalToConstant: 0.5)
         ])
     }
 }

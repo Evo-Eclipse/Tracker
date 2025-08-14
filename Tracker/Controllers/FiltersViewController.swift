@@ -98,9 +98,9 @@ extension FiltersViewController: UITableViewDataSource {
 
         cell.configure(
             title: title,
-            isFirst: isFirstCell,
-            isLast: isLastCell,
-            isChecked: isSelected
+            isSelected: isSelected,
+            isFirstCell: isFirstCell,
+            isLastCell: isLastCell
         )
 
         return cell
