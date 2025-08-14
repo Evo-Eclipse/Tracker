@@ -56,6 +56,8 @@
 
 "emptyTrackersMessage" = "Wat gaan we volgen?";
 "noSearchResultsMessage" = "Niets gevonden";
+"emptyStatisticsMessage" = "Nog niets te analyseren";
+"completedTrackersTitle" = "Trackers voltooid";
 "onboardingFirstPage" = "Volg alleen wat je wilt";
 "onboardingSecondPage" = "Zelfs als het geen liters water en yoga is";
 "categoriesDescription" = "Gewoontes en gebeurtenissen kunnen\nworden gecombineerd op betekenis";

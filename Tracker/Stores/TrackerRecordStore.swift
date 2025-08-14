@@ -11,11 +11,16 @@ protocol TrackerRecordStoreDelegate: AnyObject {
     func recordStoreDidChange(sectionChanges: [StoreSectionChange], objectChanges: [StoreObjectChange])
 }
 
+protocol TrackerRecordStoreStatisticsDelegate: AnyObject {
+    func recordStoreDidUpdateStatistics()
+}
+
 final class TrackerRecordStore: NSObject {
 
     // MARK: - Public Properties
 
     weak var delegate: TrackerRecordStoreDelegate?
+    weak var statisticsDelegate: TrackerRecordStoreStatisticsDelegate?
 
     // MARK: - Private Properties
 
@@ -29,7 +34,7 @@ final class TrackerRecordStore: NSObject {
         self.context = container.viewContext
         super.init()
     }
-    
+
     // MARK: - Public Methods
 
     func isCompleted(trackerId: UUID, on date: Date) -> Bool {
@@ -75,7 +80,15 @@ final class TrackerRecordStore: NSObject {
                 obj.date = normalized
                 obj.id = UUID()
             }
-            do { try ctx.save() } catch { print("[TrackerRecordStore] toggle error: \(error)") }
+            do {
+                try ctx.save()
+                // Notify statistics delegate
+                DispatchQueue.main.async { [weak self] in
+                    self?.statisticsDelegate?.recordStoreDidUpdateStatistics()
+                }
+            } catch {
+                print("[TrackerRecordStore] toggle error: \(error)")
+            }
         }
     }
 
@@ -87,6 +100,11 @@ final class TrackerRecordStore: NSObject {
 
         let req: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
         req.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.tracker), trackerObj)
+        do { return try context.count(for: req) } catch { return 0 }
+    }
+
+    func getTotalCompletedCount() -> Int {
+        let req: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
         do { return try context.count(for: req) } catch { return 0 }
     }
 }

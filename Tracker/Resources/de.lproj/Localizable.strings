@@ -56,6 +56,8 @@
 
 "emptyTrackersMessage" = "Was werden wir verfolgen?";
 "noSearchResultsMessage" = "Nichts gefunden";
+"emptyStatisticsMessage" = "Noch nichts zu analysieren";
+"completedTrackersTitle" = "Tracker abgeschlossen";
 "onboardingFirstPage" = "Verfolgen Sie nur das, was Sie wollen";
 "onboardingSecondPage" = "Auch wenn es nicht Liter Wasser und Yoga ist";
 "categoriesDescription" = "Gewohnheiten und Ereignisse können\nnach Bedeutung kombiniert werden";

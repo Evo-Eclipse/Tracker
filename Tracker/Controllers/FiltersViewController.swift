@@ -2,7 +2,7 @@
 //  FiltersViewController.swift
 //  Tracker
 //
-//  Created by GitHub Copilot on 14.08.2025.
+//  Created by Pavel Komarov on 14.08.2025.
 //
 
 import UIKit

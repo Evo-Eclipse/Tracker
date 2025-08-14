@@ -74,6 +74,8 @@ enum L10n {
 
     static let emptyTrackersMessage = NSLocalizedString("emptyTrackersMessage", comment: "Empty trackers state message")
     static let noSearchResultsMessage = NSLocalizedString("noSearchResultsMessage", comment: "No search results message")
+    static let emptyStatisticsMessage = NSLocalizedString("emptyStatisticsMessage", comment: "Empty statistics state message")
+    static let completedTrackersTitle = NSLocalizedString("completedTrackersTitle", comment: "Completed trackers statistics title")
     static let onboardingFirstPage = NSLocalizedString("onboardingFirstPage", comment: "First onboarding page text")
     static let onboardingSecondPage = NSLocalizedString("onboardingSecondPage", comment: "Second onboarding page text")
     static let categoriesDescription = NSLocalizedString("categoriesDescription", comment: "Categories empty state description")

@@ -56,6 +56,8 @@
 
 "emptyTrackersMessage" = "Что будем отслеживать?";
 "noSearchResultsMessage" = "Ничего не найдено";
+"emptyStatisticsMessage" = "Анализировать пока нечего";
+"completedTrackersTitle" = "Трекеров завершено";
 "onboardingFirstPage" = "Отслеживайте только то, что хотите";
 "onboardingSecondPage" = "Даже если это не литры воды и йога";
 "categoriesDescription" = "Привычки и события можно\nобъединить по смыслу";

@@ -47,12 +47,13 @@ final class TabBarViewController: UITabBarController {
         )
 
         let statisticsViewController = StatisticsViewController()
-        statisticsViewController.tabBarItem = UITabBarItem(
+        let statisticsNavigationController = UINavigationController(rootViewController: statisticsViewController)
+        statisticsNavigationController.tabBarItem = UITabBarItem(
             title: L10n.statisticsTab,
             image: UIImage(systemName: "hare.fill"),  // hare
             selectedImage: UIImage(systemName: "hare.fill")
         )
 
-        viewControllers = [trackersNavigationController, statisticsViewController]
+        viewControllers = [trackersNavigationController, statisticsNavigationController]
     }
 }
