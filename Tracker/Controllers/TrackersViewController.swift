@@ -180,7 +180,27 @@ final class TrackersViewController: UIViewController {
 
     private func updatePlaceholderVisibility() {
         let hasTrackers = visibleCategories.contains { !$0.trackers.isEmpty }
-        placeholderStackView.isHidden = hasTrackers
+        
+        guard !hasTrackers else {
+            placeholderStackView.isHidden = true
+            return
+        }
+        
+        let searchText = (searchController.searchBar.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let isSearching = !searchText.isEmpty
+        
+        configurePlaceholder(isSearching: isSearching)
+        placeholderStackView.isHidden = false
+    }
+
+    private func configurePlaceholder(isSearching: Bool) {
+        if isSearching {
+            placeholderImageView.image = UIImage.iconFaceWithMonocle
+            placeholderLabel.text = L10n.noSearchResultsMessage
+        } else {
+            placeholderImageView.image = UIImage.iconDizzy
+            placeholderLabel.text = L10n.emptyTrackersMessage
+        }
     }
 
     private func filterVisibleTrackers() {

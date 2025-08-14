@@ -47,6 +47,7 @@
 "sundayShort" = "Zo";
 
 "emptyTrackersMessage" = "Wat gaan we volgen?";
+"noSearchResultsMessage" = "Niets gevonden";
 "onboardingFirstPage" = "Volg alleen wat je wilt";
 "onboardingSecondPage" = "Zelfs als het geen liters water en yoga is";
 "categoriesDescription" = "Gewoontes en gebeurtenissen kunnen\nworden gecombineerd op betekenis";
