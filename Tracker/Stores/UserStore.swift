@@ -9,17 +9,37 @@ import Foundation
 
 final class UserStore {
     static let shared = UserStore()
-    
+
     private let onboardingCompletedKey = "IsOnboardingCompleted"
-    
+    private let statisticsKey = "StatisticsData"
+    private let currentFilterKey = "CurrentFilter"
+
     private init() {}
-    
+
     var isOnboardingCompleted: Bool {
         get {
             UserDefaults.standard.bool(forKey: onboardingCompletedKey)
         }
         set {
             UserDefaults.standard.set(newValue, forKey: onboardingCompletedKey)
+        }
+    }
+
+    func updateStatistics(completedCount: Int) {
+        UserDefaults.standard.set(completedCount, forKey: statisticsKey)
+    }
+
+    func getCompletedTrackers() -> Int {
+        return UserDefaults.standard.integer(forKey: statisticsKey)
+    }
+
+    var currentFilter: TrackerFilter {
+        get {
+            let rawValue = UserDefaults.standard.integer(forKey: currentFilterKey)
+            return TrackerFilter(rawValue: rawValue) ?? .all
+        }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: currentFilterKey)
         }
     }
 }

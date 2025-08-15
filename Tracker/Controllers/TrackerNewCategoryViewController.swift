@@ -17,7 +17,7 @@ final class TrackerNewCategoryViewController: UIViewController {
 
     private lazy var titleTextField: UITextField = {
         let textField = SpacedTextField()
-        textField.placeholder = "Введите название категории"
+        textField.placeholder = L10n.categoryNamePlaceholder
         textField.font = .systemFont(ofSize: 17, weight: .regular)
         textField.backgroundColor = .ypBackground.withAlphaComponent(0.3)
         textField.layer.cornerRadius = 16
@@ -31,7 +31,7 @@ final class TrackerNewCategoryViewController: UIViewController {
 
     private lazy var warningLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        label.text = L10n.characterLimitMessage
         label.font = .systemFont(ofSize: 17, weight: .regular)
         label.textColor = .ypRed
         label.isHidden = true
@@ -40,7 +40,7 @@ final class TrackerNewCategoryViewController: UIViewController {
 
     private lazy var doneButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(L10n.doneButton, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypGray
@@ -93,7 +93,7 @@ final class TrackerNewCategoryViewController: UIViewController {
     // MARK: - Private Methods
 
     private func setupNavigationBar() {
-        title = "Новая категория"
+        title = L10n.newCategoryTitle
     }
 
     private func setupViews() {

@@ -11,6 +11,8 @@ protocol TrackerCellDelegate: AnyObject {
     func didToggleTracker(_ tracker: Tracker, on date: Date)
     func getCompletionCount(for trackerId: UUID) -> Int
     func isTrackerCompleted(_ trackerId: UUID, on date: Date) -> Bool
+    func didRequestEditTracker(_ tracker: Tracker)
+    func didRequestDeleteTracker(_ tracker: Tracker)
 }
 
 final class TrackerCell: UICollectionViewCell {
@@ -28,9 +30,9 @@ final class TrackerCell: UICollectionViewCell {
 
     private lazy var cardView: UIView = {
         let view = UIView()
-        view.backgroundColor = .ypBlack  // Adapting
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
+        // view.backgroundColor will be adapted during cell configuration
         return view
     }()
 
@@ -38,13 +40,13 @@ final class TrackerCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16)
         label.textAlignment = .center
-        label.text = "🌱"  // Adapting
+        // label.text will be adapted during cell configuration
         return label
     }()
 
     private lazy var emojiBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.ypWhite.withAlphaComponent(0.3)
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.3)
         view.layer.cornerRadius = 12
         view.layer.masksToBounds = true
         return view
@@ -56,7 +58,7 @@ final class TrackerCell: UICollectionViewCell {
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypWhite
         label.numberOfLines = 2
-        label.text = "Поливать растения"  // Adapting
+        // label.text will be adapted during cell configuration
         return label
     }()
 
@@ -64,16 +66,16 @@ final class TrackerCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlack
-        label.text = "0 дней"  // Adapting
+        // label.text will be adapted during cell configuration
         return label
     }()
 
     private lazy var completeButton: UIButton = {
         let button = UIButton(type: .custom)
-        let image = UIImage(named: "button_complete")?.withRenderingMode(.alwaysTemplate)
+        let image = UIImage.buttonCompleteInactive.withRenderingMode(.alwaysTemplate)
         button.setImage(image, for: .normal)
-        button.tintColor = .ypBlack  // Adapting
         button.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
+        // button.tintColor will be adapted during cell configuration
         return button
     }()
 
@@ -84,6 +86,7 @@ final class TrackerCell: UICollectionViewCell {
 
         setupViews()
         setupConstraints()
+        setupGestures()
     }
 
     required init?(coder: NSCoder) {
@@ -174,13 +177,18 @@ final class TrackerCell: UICollectionViewCell {
         ])
     }
 
+    private func setupGestures() {
+        let contextMenuInteraction = UIContextMenuInteraction(delegate: self)
+        cardView.addInteraction(contextMenuInteraction)
+    }
+
     private func updateCompletionState() {
         guard let tracker = tracker else { return }
 
         isCompleted = delegate?.isTrackerCompleted(tracker.id, on: currentDate) ?? false
 
-        let imageName = isCompleted ? "button_completed" : "button_complete"
-        let image = UIImage(named: imageName)?.withRenderingMode(.alwaysTemplate)
+        let image = (isCompleted ? UIImage.buttonCompleteActive : UIImage.buttonCompleteInactive).withRenderingMode(.alwaysTemplate)
+
         completeButton.setImage(image, for: .normal)
 
         completeButton.alpha = isCompleted ? 0.3 : 1.0
@@ -195,6 +203,26 @@ final class TrackerCell: UICollectionViewCell {
         guard let tracker = tracker else { return }
 
         let completionCount = delegate?.getCompletionCount(for: tracker.id) ?? 0
-        countLabel.text = completionCount.localizedDayCount
+        countLabel.text = DaysFormatter.localizedDaysCount(completionCount)
+    }
+}
+
+// MARK: - UIContextMenuInteractionDelegate
+
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        guard let tracker = tracker else { return nil }
+
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let editAction = UIAction(title: L10n.editAction, image: nil) { [weak self] _ in
+                self?.delegate?.didRequestEditTracker(tracker)
+            }
+
+            let deleteAction = UIAction(title: L10n.deleteAction, image: nil, attributes: .destructive) { [weak self] _ in
+                self?.delegate?.didRequestDeleteTracker(tracker)
+            }
+
+            return UIMenu(title: "", children: [editAction, deleteAction])
+        }
     }
 }

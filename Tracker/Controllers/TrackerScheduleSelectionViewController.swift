@@ -28,7 +28,7 @@ final class TrackerScheduleSelectionViewController: UIViewController {
 
     private lazy var doneButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(L10n.doneButton, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypBlack
@@ -61,7 +61,7 @@ final class TrackerScheduleSelectionViewController: UIViewController {
     // MARK: - Private Methods
 
     private func setupNavigationBar() {
-        title = "Расписание"
+        title = L10n.scheduleTitle
         navigationItem.hidesBackButton = true
     }
 

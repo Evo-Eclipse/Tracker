@@ -48,7 +48,7 @@ final class TrackerStore: NSObject {
         super.init()
         try? fetchedResultsController.performFetch()
     }
-    
+
     // MARK: - Public Methods
 
     func createTracker(_ tracker: Tracker, in categoryTitle: String) {
@@ -100,17 +100,9 @@ final class TrackerStore: NSObject {
     }
 
     // Build a filtered snapshot grouped by category title for UI consumption
-    func snapshotFiltered(date: Date, searchText: String?) -> [TrackerCategory] {
-        let calendar = Calendar.current
-        let weekdayIndex = calendar.component(.weekday, from: date)
-        let weekday = Weekday.fromSystemIndex(weekdayIndex)
-
-        // Prepare case-insensitive search if provided
-        let query = (searchText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "")
-        let hasQuery = !query.isEmpty
-
+    func snapshotFiltered(date: Date, searchText: String?, filter: TrackerFilter? = nil, recordStore: TrackerRecordStore? = nil) -> [TrackerCategory] {
         var result: [TrackerCategory] = []
-        
+
         let sectionsCount = numberOfSections()
         for section in 0..<sectionsCount {
             let title = titleForSection(section)
@@ -118,12 +110,10 @@ final class TrackerStore: NSObject {
             let items = numberOfItems(in: section)
             for row in 0..<items {
                 let t = tracker(at: IndexPath(item: row, section: section))
-                // Filter by weekday schedule (empty schedule means every day)
-                let matchesDay = t.schedule.isEmpty || t.schedule.contains(weekday)
-                if !matchesDay { continue }
-                // Filter by search query
-                if hasQuery, t.title.range(of: query, options: [.caseInsensitive, .diacriticInsensitive]) == nil { continue }
-                trackers.append(t)
+
+                if shouldIncludeTracker(t, date: date, searchText: searchText, filter: filter, recordStore: recordStore) {
+                    trackers.append(t)
+                }
             }
             if !trackers.isEmpty {
                 result.append(TrackerCategory(title: title, trackers: trackers))
@@ -132,7 +122,62 @@ final class TrackerStore: NSObject {
         return result
     }
 
+    // Check if there are any trackers on date (without completed/incomplete filter)
+    func hasTrackersOnDate(_ date: Date, searchText: String?) -> Bool {
+        let sectionsCount = numberOfSections()
+        for section in 0..<sectionsCount {
+            let items = numberOfItems(in: section)
+            for row in 0..<items {
+                let t = tracker(at: IndexPath(item: row, section: section))
+
+                // Check without completion filter - pass nil for filter and recordStore
+                if shouldIncludeTracker(t, date: date, searchText: searchText, filter: nil as TrackerFilter?, recordStore: nil as TrackerRecordStore?) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     // MARK: - Private Methods
+
+    // Common logic for filtering trackers by date, search text, and completion status
+    private func shouldIncludeTracker(_ tracker: Tracker, date: Date, searchText: String?, filter: TrackerFilter?, recordStore: TrackerRecordStore?) -> Bool {
+        let calendar = Calendar.current
+        let weekdayIndex = calendar.component(.weekday, from: date)
+        let weekday = Weekday.fromSystemIndex(weekdayIndex)
+
+        // Prepare case-insensitive search if provided
+        let query = (searchText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "")
+        let hasQuery = !query.isEmpty
+
+        // Filter by weekday schedule (empty schedule means every day)
+        let matchesDay = tracker.schedule.isEmpty || tracker.schedule.contains(weekday)
+        // For "All trackers" we ignore schedule restriction
+        if !(filter == .all) {
+            if !matchesDay { return false }
+        }
+
+        // Filter by search query
+        if hasQuery, tracker.title.localizedStandardRange(of: query) == nil { return false }
+
+        // Filter by completion state if requested
+        if let filter = filter, let rs = recordStore {
+            switch filter {
+            case .all:
+                break
+            case .today:
+                // Already constrained by date via weekday; include all
+                break
+            case .completed:
+                if !rs.isCompleted(trackerId: tracker.id, on: date) { return false }
+            case .incomplete:
+                if rs.isCompleted(trackerId: tracker.id, on: date) { return false }
+            }
+        }
+
+        return true
+    }
 
     private func fetchOrCreateCategory(with title: String, in ctx: NSManagedObjectContext) -> TrackerCategoryCoreData {
         let req: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
